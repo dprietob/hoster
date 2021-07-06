@@ -5,15 +5,17 @@ import java.awt.event.*;
 
 public class AboutDialog extends JDialog
 {
+    private JFrame parent;
     private JPanel aboutPane;
     private JButton close;
 
-    public AboutDialog()
+    public AboutDialog(JFrame p)
     {
         setContentPane(aboutPane);
         setModal(true);
         getRootPane().setDefaultButton(close);
 
+        parent = p;
         close.addActionListener(e -> onClose());
 
         // Call onCancel() when cross is clicked
@@ -41,9 +43,9 @@ public class AboutDialog extends JDialog
         pack();
         setIconImage(new ImageIcon(getClass().getResource("icons/help.png")).getImage());
         setTitle("About");
+        setLocationRelativeTo(parent);
         setResizable(false);
         setVisible(true);
-        setLocationRelativeTo(null);
     }
 
     private void onClose()

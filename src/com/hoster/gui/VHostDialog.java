@@ -5,6 +5,7 @@ import java.awt.event.*;
 
 public class VHostDialog extends JDialog
 {
+    private JFrame parent;
     private JPanel vhostPane;
     private JTextField serverAdmin;
     private JTextField serverName;
@@ -18,12 +19,13 @@ public class VHostDialog extends JDialog
     private JTextField require;
     private JTextField allowOverride;
 
-    public VHostDialog()
+    public VHostDialog(JFrame p)
     {
         setContentPane(vhostPane);
         setModal(true);
         getRootPane().setDefaultButton(accept);
 
+        parent = p;
         accept.addActionListener(e -> onOK());
         cancel.addActionListener(e -> onCancel());
 
@@ -52,9 +54,9 @@ public class VHostDialog extends JDialog
         pack();
         setIconImage(new ImageIcon(getClass().getResource("icons/vhost.png")).getImage());
         setTitle("Virtual host configuration");
+        setLocationRelativeTo(parent);
         setResizable(false);
         setVisible(true);
-        setLocationRelativeTo(null);
     }
 
     private void onOK()

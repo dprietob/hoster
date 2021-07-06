@@ -5,6 +5,7 @@ import java.awt.event.*;
 
 public class ConfigDialog extends JDialog
 {
+    private JFrame parent;
     private JTextField domainsFile;
     private JTextField vhostsFile;
     private JButton findDomainsFile;
@@ -18,12 +19,13 @@ public class ConfigDialog extends JDialog
     private JButton findDirectoryPath;
     private JComboBox theme;
 
-    public ConfigDialog()
+    public ConfigDialog(JFrame p)
     {
         setContentPane(configPane);
         setModal(true);
         getRootPane().setDefaultButton(accept);
 
+        parent = p;
         accept.addActionListener(e -> onOK());
         cancel.addActionListener(e -> onCancel());
 
@@ -52,9 +54,9 @@ public class ConfigDialog extends JDialog
         pack();
         setIconImage(new ImageIcon(getClass().getResource("icons/settings.png")).getImage());
         setTitle("Main configuration");
+        setLocationRelativeTo(parent);
         setResizable(false);
         setVisible(true);
-        setLocationRelativeTo(null);
     }
 
     private void onOK()

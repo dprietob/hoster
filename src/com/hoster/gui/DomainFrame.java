@@ -72,19 +72,19 @@ public class DomainFrame extends JFrame
     private void onVirtualHostConfigure()
     {
         System.out.println(this);
-        VHostDialog dialog = new VHostDialog();
+        VHostDialog dialog = new VHostDialog(this);
         dialog.build();
     }
 
     private void onMainConfig()
     {
-        ConfigDialog dialog = new ConfigDialog();
+        ConfigDialog dialog = new ConfigDialog(this);
         dialog.build();
     }
 
     private void onAbout()
     {
-        AboutDialog dialog = new AboutDialog();
+        AboutDialog dialog = new AboutDialog(this);
         dialog.build();
     }
 }
