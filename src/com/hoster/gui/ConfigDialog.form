@@ -14,7 +14,7 @@
         </constraints>
         <properties>
           <labelFor value="2352f"/>
-          <text value="Domains file"/>
+          <text value="Hosts file"/>
         </properties>
       </component>
       <component id="ef160" class="javax.swing.JLabel">
@@ -26,7 +26,7 @@
           <text value="VHost file"/>
         </properties>
       </component>
-      <component id="2352f" class="javax.swing.JTextField" binding="domainsFile">
+      <component id="2352f" class="javax.swing.JTextField" binding="hostsFile">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -42,7 +42,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="7fde2" class="javax.swing.JButton" binding="findDomainsFile">
+      <component id="7fde2" class="javax.swing.JButton" binding="findHostsFile">
         <constraints>
           <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>

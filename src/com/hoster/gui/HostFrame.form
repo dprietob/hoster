@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.hoster.gui.DomainFrame">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.hoster.gui.HostFrame">
   <grid id="27dc6" binding="domainPane" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
@@ -23,7 +23,7 @@
             <properties>
               <icon value="com/hoster/gui/icons/delete.png"/>
               <text value="Delete"/>
-              <toolTipText value="Delete selected domain (del)"/>
+              <toolTipText value="Delete selected host (del)"/>
             </properties>
           </component>
           <component id="eddf" class="javax.swing.JButton" binding="addDomain">
@@ -33,7 +33,7 @@
             <properties>
               <icon value="com/hoster/gui/icons/add.png"/>
               <text value="Add"/>
-              <toolTipText value="Add new domain (Ctrl+N)"/>
+              <toolTipText value="Add new host (Ctrl+N)"/>
             </properties>
           </component>
           <hspacer id="b3dea">
@@ -80,7 +80,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="d3a77" class="javax.swing.JTable" binding="domains">
+          <component id="d3a77" class="javax.swing.JTable" binding="hostsTable">
             <constraints/>
             <properties>
               <fillsViewportHeight value="true"/>

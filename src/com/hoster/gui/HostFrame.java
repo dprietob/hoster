@@ -1,27 +1,35 @@
 package com.hoster.gui;
 
+import com.hoster.files.Hosts;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 
-public class DomainFrame extends JFrame
+public class HostFrame extends JFrame
 {
-    private Map<String,String> properties;
+    private final String APP_NAME = "Hoster";
+    private final String APP_VERSION = "0.1.0";
+
+    private Map<String, String> hosts;
+    private Map<String, String> properties;
     private JPanel domainPane;
     private JButton addDomain;
     private JButton deleteDomain;
     private JButton virtualHost;
     private JButton mainConfig;
     private JButton about;
-    private JTable domains;
+    private JTable hostsTable;
 
-    public DomainFrame(Map<String,String> config)
+    public HostFrame(Map<String, String> hostsConfig, Map<String, String> propertiesConfig)
     {
-        properties = config;
+        hosts = hostsConfig;
+        properties = propertiesConfig;
 
         setContentPane(domainPane);
+        updateHostsTable();
 
         addDomain.addActionListener(e -> onAddDomain());
         deleteDomain.addActionListener(e -> onDeleteDomain());
@@ -43,14 +51,12 @@ public class DomainFrame extends JFrame
 
         // Call onAbout() on F1
         domainPane.registerKeyboardAction(e -> onAddDomain(), KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
-        setDomainsToTable();
     }
 
     public void build()
     {
         pack();
-        setTitle("Hoster 0.1.0");
+        setTitle(APP_NAME + " " + APP_VERSION);
         setIconImage(new ImageIcon(getClass().getResource("icons/icon.png")).getImage());
         setResizable(false);
         setVisible(true);
@@ -58,25 +64,17 @@ public class DomainFrame extends JFrame
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
-    private void setDomainsToTable()
+    private void updateHostsTable()
     {
-        DefaultTableModel tableModel= new DefaultTableModel();
-        domains.setModel(tableModel);
+        DefaultTableModel tableModel = new DefaultTableModel();
+        hostsTable.setModel(tableModel);
 
         tableModel.addColumn("IP");
         tableModel.addColumn("Domain");
 
-        Object[] columna= new Object[3];
-
-//        int objGuardados= estDAO.extraerTodos().size();
-//
-//        for (int i = 0; i < objGuardados; i++) {
-//            columna[0]= estDAO.extraerTodos().get(i).getNombre();
-//            columna[1]= estDAO.extraerTodos().get(i).getMatricula();
-//            columna[2]= estDAO.extraerTodos().get(i).getNota();
-//
-//            modeloTabla.addRow(columna);
-//        }
+        for (Map.Entry<String, String> entry : hosts.entrySet()) {
+            tableModel.addRow(new Object[]{entry.getKey(), entry.getValue()});
+        }
     }
 
     private void onAddDomain()
@@ -86,7 +84,30 @@ public class DomainFrame extends JFrame
 
     private void onDeleteDomain()
     {
+        int row = hostsTable.getSelectedRow();
+        if (row > -1) {
+            int option = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this host? This action can not be undone.",
+                "Delete host",
+                JOptionPane.YES_NO_OPTION
+            );
 
+            if (option == JOptionPane.YES_OPTION) {
+                String ip = hostsTable.getValueAt(row, 0).toString();
+                hosts.remove(ip);
+                if (Hosts.save(properties.get("hosts_file"), hosts, APP_NAME, APP_VERSION)) {
+                    updateHostsTable();
+                } else {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "There was an error trying to update host file. Make sure the application has the necessary privileges.",
+                        "Host update error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        }
     }
 
     private void onVirtualHostConfigure()

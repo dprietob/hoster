@@ -1,11 +1,12 @@
 package com.hoster.gui;
 
-import com.hoster.Properties;
+import com.hoster.files.Properties;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Map;
 
 public class ConfigDialog extends JDialog
@@ -14,8 +15,8 @@ public class ConfigDialog extends JDialog
     private JFrame parent;
     private JPanel configPane;
     private JComboBox theme;
-    private JTextField domainsFile;
-    private JButton findDomainsFile;
+    private JTextField hostsFile;
+    private JButton findHostsFile;
     private JTextField vhostsFile;
     private JButton findVhostFile;
     private JTextField directoryPath;
@@ -35,7 +36,7 @@ public class ConfigDialog extends JDialog
         setPropertiesConfig();
 
         theme.addActionListener(e -> onThemeSelection());
-        findDomainsFile.addActionListener(e -> onFind(domainsFile, JFileChooser.FILES_ONLY));
+        findHostsFile.addActionListener(e -> onFind(hostsFile, JFileChooser.FILES_ONLY));
         findVhostFile.addActionListener(e -> onFind(vhostsFile, JFileChooser.FILES_ONLY));
         findDirectoryPath.addActionListener(e -> onFind(directoryPath, JFileChooser.DIRECTORIES_ONLY));
         accept.addActionListener(e -> onAccept());
@@ -69,7 +70,7 @@ public class ConfigDialog extends JDialog
     private void setPropertiesConfig()
     {
         theme.setSelectedIndex(properties.get("theme").equals("light") ? 0 : 1);
-        domainsFile.setText(properties.get("domains_file"));
+        hostsFile.setText(properties.get("hosts_file"));
         vhostsFile.setText(properties.get("vhost_file"));
         directoryPath.setText(properties.get("directory_path"));
         require.setText(properties.get("directory_require"));
@@ -80,7 +81,7 @@ public class ConfigDialog extends JDialog
     {
         JOptionPane.showMessageDialog(
             this,
-            "Theme settings will be applied when the application is restarted.",
+            "The theme will be updated when the application is restarted.",
             "Theme changed",
             JOptionPane.INFORMATION_MESSAGE
         );
@@ -91,6 +92,7 @@ public class ConfigDialog extends JDialog
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(mode);
+        fileChooser.setCurrentDirectory(new File(field.getText()));
         int selection = fileChooser.showOpenDialog(field);
         if (selection == JFileChooser.APPROVE_OPTION) {
             field.setText(fileChooser.getSelectedFile().getAbsolutePath());
@@ -101,7 +103,7 @@ public class ConfigDialog extends JDialog
     {
         properties.clear();
         properties.put("theme", theme.getSelectedItem().toString().toLowerCase());
-        properties.put("domains_file", domainsFile.getText());
+        properties.put("hosts_file", hostsFile.getText());
         properties.put("vhost_file", vhostsFile.getText());
         properties.put("directory_path", directoryPath.getText());
         properties.put("directory_require", require.getText());
