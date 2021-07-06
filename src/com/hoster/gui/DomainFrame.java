@@ -1,10 +1,14 @@
 package com.hoster.gui;
 
 import javax.swing.*;
-import java.awt.event.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.util.Map;
 
 public class DomainFrame extends JFrame
 {
+    private Map<String,String> properties;
     private JPanel domainPane;
     private JButton addDomain;
     private JButton deleteDomain;
@@ -13,8 +17,10 @@ public class DomainFrame extends JFrame
     private JButton about;
     private JTable domains;
 
-    public DomainFrame()
+    public DomainFrame(Map<String,String> config)
     {
+        properties = config;
+
         setContentPane(domainPane);
 
         addDomain.addActionListener(e -> onAddDomain());
@@ -38,7 +44,7 @@ public class DomainFrame extends JFrame
         // Call onAbout() on F1
         domainPane.registerKeyboardAction(e -> onAddDomain(), KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        createTable();
+        setDomainsToTable();
     }
 
     public void build()
@@ -52,11 +58,25 @@ public class DomainFrame extends JFrame
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
-    private void createTable()
+    private void setDomainsToTable()
     {
-        String[] columnNames = {"IP", "Domain"};
-        Object[][] data = {{"Kathy", "Smith"}, {"John", "Doe"}};
-        domains = new JTable(data, columnNames);
+        DefaultTableModel tableModel= new DefaultTableModel();
+        domains.setModel(tableModel);
+
+        tableModel.addColumn("IP");
+        tableModel.addColumn("Domain");
+
+        Object[] columna= new Object[3];
+
+//        int objGuardados= estDAO.extraerTodos().size();
+//
+//        for (int i = 0; i < objGuardados; i++) {
+//            columna[0]= estDAO.extraerTodos().get(i).getNombre();
+//            columna[1]= estDAO.extraerTodos().get(i).getMatricula();
+//            columna[2]= estDAO.extraerTodos().get(i).getNota();
+//
+//            modeloTabla.addRow(columna);
+//        }
     }
 
     private void onAddDomain()
@@ -66,19 +86,18 @@ public class DomainFrame extends JFrame
 
     private void onDeleteDomain()
     {
-        dispose();
+
     }
 
     private void onVirtualHostConfigure()
     {
-        System.out.println(this);
         VHostDialog dialog = new VHostDialog(this);
         dialog.build();
     }
 
     private void onMainConfig()
     {
-        ConfigDialog dialog = new ConfigDialog(this);
+        ConfigDialog dialog = new ConfigDialog(this, properties);
         dialog.build();
     }
 

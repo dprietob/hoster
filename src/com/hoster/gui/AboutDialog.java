@@ -12,7 +12,6 @@ public class AboutDialog extends JDialog
     public AboutDialog(JFrame p)
     {
         setContentPane(aboutPane);
-        setModal(true);
         getRootPane().setDefaultButton(close);
 
         parent = p;
@@ -44,6 +43,7 @@ public class AboutDialog extends JDialog
         setIconImage(new ImageIcon(getClass().getResource("icons/help.png")).getImage());
         setTitle("About");
         setLocationRelativeTo(parent);
+        setModal(true);
         setResizable(false);
         setVisible(true);
     }

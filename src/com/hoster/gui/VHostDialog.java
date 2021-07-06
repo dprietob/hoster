@@ -22,11 +22,10 @@ public class VHostDialog extends JDialog
     public VHostDialog(JFrame p)
     {
         setContentPane(vhostPane);
-        setModal(true);
         getRootPane().setDefaultButton(accept);
 
         parent = p;
-        accept.addActionListener(e -> onOK());
+        accept.addActionListener(e -> onAccept());
         cancel.addActionListener(e -> onCancel());
 
         // Call onCancel() when cross is clicked
@@ -55,11 +54,12 @@ public class VHostDialog extends JDialog
         setIconImage(new ImageIcon(getClass().getResource("icons/vhost.png")).getImage());
         setTitle("Virtual host configuration");
         setLocationRelativeTo(parent);
+        setModal(true);
         setResizable(false);
         setVisible(true);
     }
 
-    private void onOK()
+    private void onAccept()
     {
         dispose();
     }
