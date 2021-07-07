@@ -3,7 +3,7 @@ package com.hoster.files;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Properties extends ConfigFile
+public class PropertiesFile extends ConfigFile
 {
     private static final String CONFIG_FILE = "config.properties";
 

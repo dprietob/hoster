@@ -1,5 +1,5 @@
 package com.hoster.files;
 
-public class VHosts
+public class VHostsFile
 {
 }

@@ -4,11 +4,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class ConfigFile
 {
+    public Map<String, String> load(String fileName, String separator)
+    {
+        return load(fileName, new HashMap<>(), separator);
+    }
+
     public Map<String, String> load(String fileName, Map<String, String> initialConfig, String separator)
     {
         try {

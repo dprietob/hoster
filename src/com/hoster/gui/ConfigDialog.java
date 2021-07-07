@@ -1,6 +1,7 @@
 package com.hoster.gui;
 
-import com.hoster.files.Properties;
+import com.hoster.files.PropertiesFile;
+import com.hoster.gui.listeners.ConfigListener;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class ConfigDialog extends JDialog
 {
     private Map<String, String> properties;
+    private ConfigListener configListener;
     private JFrame parent;
     private JPanel configPane;
     private JComboBox theme;
@@ -54,6 +56,11 @@ public class ConfigDialog extends JDialog
 
         // Call onCancel() on ESCAPE
         configPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    }
+
+    public void addConfigListener(ConfigListener listener)
+    {
+        configListener = listener;
     }
 
     public void build()
@@ -109,7 +116,8 @@ public class ConfigDialog extends JDialog
         properties.put("directory_require", require.getText());
         properties.put("directory_allow_override", allowOverride.getText());
 
-        if (Properties.save(properties)) {
+        if (PropertiesFile.save(properties)) {
+            configListener.onConfigUpdate();
             dispose();
         } else {
             JOptionPane.showMessageDialog(
