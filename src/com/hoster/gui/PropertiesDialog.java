@@ -12,7 +12,7 @@ import java.util.Map;
 public class PropertiesDialog extends JDialog
 {
     private Map<String, String> properties;
-    private PropertiesListener configListener;
+    private PropertiesListener propertiesListener;
     private JFrame parent;
     private JPanel configPane;
     private JComboBox theme;
@@ -59,7 +59,7 @@ public class PropertiesDialog extends JDialog
 
     public void addConfigListener(PropertiesListener listener)
     {
-        configListener = listener;
+        propertiesListener = listener;
     }
 
     public void build()
@@ -115,7 +115,7 @@ public class PropertiesDialog extends JDialog
         properties.put("directory_require", require.getText());
         properties.put("directory_allow_override", allowOverride.getText());
 
-        configListener.onPropertiesUpdate();
+        propertiesListener.onPropertiesUpdate();
         dispose();
     }
 
