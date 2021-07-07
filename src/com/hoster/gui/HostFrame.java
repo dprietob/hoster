@@ -2,21 +2,24 @@ package com.hoster.gui;
 
 import com.hoster.Host;
 import com.hoster.files.HostsFile;
-import com.hoster.gui.listeners.ConfigListener;
+import com.hoster.files.PropertiesFile;
+import com.hoster.files.VHostsFile;
+import com.hoster.gui.listeners.PropertiesListener;
 import com.hoster.gui.listeners.HostListener;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Map;
 
-public class HostFrame extends JFrame implements HostListener, ConfigListener
+public class HostFrame extends JFrame implements HostListener, PropertiesListener
 {
     private final String APP_NAME = "Hoster";
     private final String APP_VERSION = "0.1.0";
 
-    private Map<String, Host> hostsMap;
+    private List<Host> hostsList;
     private Map<String, String> propertiesMap;
     private JPanel domainPane;
     private JButton addDomain;
@@ -26,9 +29,9 @@ public class HostFrame extends JFrame implements HostListener, ConfigListener
     private JButton about;
     private JTable hostsTable;
 
-    public HostFrame(Map<String, Host> hostsConfig, Map<String, String> propertiesConfig)
+    public HostFrame(List<Host> hostsConfig, Map<String, String> propertiesConfig)
     {
-        hostsMap = hostsConfig;
+        hostsList = hostsConfig;
         propertiesMap = propertiesConfig;
 
         setContentPane(domainPane);
@@ -76,10 +79,7 @@ public class HostFrame extends JFrame implements HostListener, ConfigListener
         hostsTable.setModel(tableModel);
         hostsTable.getTableHeader().setReorderingAllowed(false);
 
-        Host host;
-
-        for (Map.Entry<String, Host> entry : hostsMap.entrySet()) {
-            host = entry.getValue();
+        for (Host host : hostsList) {
             tableModel.addRow(new Object[]{host.getIp(), host.getDomain()});
         }
     }
@@ -95,7 +95,8 @@ public class HostFrame extends JFrame implements HostListener, ConfigListener
     {
         int row = hostsTable.getSelectedRow();
         if (row > -1) {
-            VHostDialog dialog = new VHostDialog(this);
+            VHostDialog dialog = new VHostDialog(this, hostsList.get(row), row);
+            dialog.addHostListener(this);
             dialog.build();
         } else {
             JOptionPane.showMessageDialog(
@@ -109,7 +110,7 @@ public class HostFrame extends JFrame implements HostListener, ConfigListener
 
     private void onMainConfigDialog()
     {
-        ConfigDialog dialog = new ConfigDialog(this, propertiesMap);
+        PropertiesDialog dialog = new PropertiesDialog(this, propertiesMap);
         dialog.addConfigListener(this);
         dialog.build();
     }
@@ -123,8 +124,8 @@ public class HostFrame extends JFrame implements HostListener, ConfigListener
     @Override
     public void onHostAdded(Host host)
     {
-        hostsMap.put(host.getDomain(), host);
-        if (HostsFile.save(propertiesMap.get("hosts_file"), hostsMap, APP_NAME, APP_VERSION)) {
+        hostsList.add(host);
+        if (HostsFile.save(propertiesMap.get("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
             updateHostsTable();
         } else {
             JOptionPane.showMessageDialog(
@@ -143,15 +144,14 @@ public class HostFrame extends JFrame implements HostListener, ConfigListener
         if (row > -1) {
             int option = JOptionPane.showConfirmDialog(
                 this,
-                "Are you sure you want to delete this host? This action can not be undone.",
+                "Are you sure you want to delete this host? This action will remove it's virtual host configuration and can not be undone.",
                 "Delete host",
                 JOptionPane.YES_NO_OPTION
             );
 
             if (option == JOptionPane.YES_OPTION) {
-                String ip = hostsTable.getValueAt(row, 0).toString();
-                hostsMap.remove(ip);
-                if (HostsFile.save(propertiesMap.get("hosts_file"), hostsMap, APP_NAME, APP_VERSION)) {
+                hostsList.remove(row);
+                if (HostsFile.save(propertiesMap.get("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
                     updateHostsTable();
                 } else {
                     JOptionPane.showMessageDialog(
@@ -173,15 +173,30 @@ public class HostFrame extends JFrame implements HostListener, ConfigListener
     }
 
     @Override
-    public void onVirtualHostUpdated(Host host)
+    public void onVirtualHostUpdated(Host host, int row)
     {
-        hostsMap.put(host.getDomain(), host);
+        hostsList.remove(row);
+        hostsList.add(row, host);
+
+        if (!VHostsFile.save(propertiesMap.get("vhosts_file"), hostsList, APP_NAME, APP_VERSION)) {
+            JOptionPane.showMessageDialog(
+                this,
+                "There was an error trying to update virtual-host file. Make sure the application has the necessary privileges.",
+                "Host file update error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
 
     @Override
-    public void onConfigUpdate()
+    public void onPropertiesUpdate()
     {
-        hostsMap = HostsFile.load(propertiesMap.get("hosts_file"));
-        updateHostsTable();
+        if (!PropertiesFile.save(propertiesMap)) {
+            JOptionPane.showMessageDialog(
+                this,
+                "An error occurred while trying to save the properties file. Please make sure the application has the necessary privileges.",
+                "Properties file error",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

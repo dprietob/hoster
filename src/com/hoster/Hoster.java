@@ -9,17 +9,18 @@ import com.hoster.gui.HostFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.List;
 
 public class Hoster
 {
     public static void main(String[] args)
     {
         EventQueue.invokeLater(() -> {
-            Map<String, String> properties = PropertiesFile.load();
-            Map<String, Host> hosts = HostsFile.load(properties.get("hosts_file"));
+            Map<String, String> propertiesMap = PropertiesFile.load();
+            List<Host> hostsList = HostsFile.load(propertiesMap.get("hosts_file"));
 
-            setTheme(properties.get("theme"));
-            HostFrame frame = new HostFrame(hosts, properties);
+            setTheme(propertiesMap.get("theme"));
+            HostFrame frame = new HostFrame(hostsList, propertiesMap);
             frame.build();
         });
     }

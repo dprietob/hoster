@@ -1,7 +1,6 @@
 package com.hoster.gui;
 
-import com.hoster.files.PropertiesFile;
-import com.hoster.gui.listeners.ConfigListener;
+import com.hoster.gui.listeners.PropertiesListener;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -10,10 +9,10 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Map;
 
-public class ConfigDialog extends JDialog
+public class PropertiesDialog extends JDialog
 {
     private Map<String, String> properties;
-    private ConfigListener configListener;
+    private PropertiesListener configListener;
     private JFrame parent;
     private JPanel configPane;
     private JComboBox theme;
@@ -28,7 +27,7 @@ public class ConfigDialog extends JDialog
     private JButton accept;
     private JButton cancel;
 
-    public ConfigDialog(JFrame p, Map<String, String> config)
+    public PropertiesDialog(JFrame p, Map<String, String> config)
     {
         parent = p;
         properties = config;
@@ -58,7 +57,7 @@ public class ConfigDialog extends JDialog
         configPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    public void addConfigListener(ConfigListener listener)
+    public void addConfigListener(PropertiesListener listener)
     {
         configListener = listener;
     }
@@ -116,16 +115,8 @@ public class ConfigDialog extends JDialog
         properties.put("directory_require", require.getText());
         properties.put("directory_allow_override", allowOverride.getText());
 
-        if (PropertiesFile.save(properties)) {
-            configListener.onConfigUpdate();
-            dispose();
-        } else {
-            JOptionPane.showMessageDialog(
-                this,
-                "An error occurred while trying to save the properties file. Please make sure the application has the necessary privileges.",
-                "Properties file error",
-                JOptionPane.ERROR_MESSAGE);
-        }
+        configListener.onPropertiesUpdate();
+        dispose();
     }
 
     private void onCancel()
