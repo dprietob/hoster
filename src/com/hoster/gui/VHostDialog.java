@@ -72,7 +72,7 @@ public class VHostDialog extends JDialog
         setVisible(true);
     }
 
-    private void onAccept()
+    protected void onAccept()
     {
         if (!fieldsEmpty()) {
             host.setServerAdmin(serverAdmin.getText());
@@ -96,12 +96,12 @@ public class VHostDialog extends JDialog
         }
     }
 
-    private void onCancel()
+    protected void onCancel()
     {
         dispose();
     }
 
-    private boolean fieldsEmpty()
+    protected boolean fieldsEmpty()
     {
         return serverName.getText().equals("") && documentRoot.getText().equals("");
     }

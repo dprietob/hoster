@@ -48,7 +48,7 @@ public class AboutDialog extends JDialog
         setVisible(true);
     }
 
-    private void onClose()
+    protected void onClose()
     {
         dispose();
     }

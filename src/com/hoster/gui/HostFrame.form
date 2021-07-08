@@ -5,10 +5,12 @@
     <constraints>
       <xy x="20" y="20" width="683" height="403"/>
     </constraints>
-    <properties/>
+    <properties>
+      <preferredSize width="550" height="500"/>
+    </properties>
     <border type="none"/>
     <children>
-      <grid id="36a9c" layout-manager="GridLayoutManager" row-count="1" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="36a9c" layout-manager="GridLayoutManager" row-count="1" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="5" right="0"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -16,7 +18,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="92666" class="javax.swing.JButton" binding="deleteDomain">
+          <component id="92666" class="javax.swing.JButton" binding="deleteHost">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -26,7 +28,7 @@
               <toolTipText value="Delete selected host (del)"/>
             </properties>
           </component>
-          <component id="eddf" class="javax.swing.JButton" binding="addDomain">
+          <component id="eddf" class="javax.swing.JButton" binding="addHost">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -38,12 +40,12 @@
           </component>
           <hspacer id="b3dea">
             <constraints>
-              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
           <component id="eaf13" class="javax.swing.JButton" binding="mainConfig">
             <constraints>
-              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <icon value="com/hoster/gui/icons/settings.png"/>
@@ -53,7 +55,7 @@
           </component>
           <component id="80192" class="javax.swing.JButton" binding="virtualHost">
             <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <icon value="com/hoster/gui/icons/vhost.png"/>
@@ -63,12 +65,22 @@
           </component>
           <component id="e60c" class="javax.swing.JButton" binding="about">
             <constraints>
-              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <icon value="com/hoster/gui/icons/help.png"/>
               <text value=""/>
               <toolTipText value="About (F1)"/>
+            </properties>
+          </component>
+          <component id="b3729" class="javax.swing.JButton" binding="editHost">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <icon value="com/hoster/gui/icons/edit.png"/>
+              <text value="Edit"/>
+              <toolTipText value="Edit selected host (space)"/>
             </properties>
           </component>
         </children>

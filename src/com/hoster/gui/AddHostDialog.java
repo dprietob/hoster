@@ -10,11 +10,12 @@ import java.awt.event.WindowEvent;
 
 public class AddHostDialog extends JDialog
 {
-    private HostListener hostListener;
+    protected HostListener hostListener;
     private JFrame parent;
     private JPanel addHostPane;
-    private JTextField ip;
-    private JTextField domain;
+    protected JTextField ip;
+    protected JTextField domain;
+    protected JCheckBox active;
     private JButton cancel;
     private JButton accept;
 
@@ -58,11 +59,11 @@ public class AddHostDialog extends JDialog
         setVisible(true);
     }
 
-    private void onAccept()
+    protected void onAccept()
     {
-        if (!fieldsEmpty()) {
+        if (fieldsFilled()) {
             Host host = new Host();
-            host.setActive(true);
+            host.setActive(active.isSelected());
             host.setIp(ip.getText());
             host.setDomain(domain.getText());
 
@@ -77,13 +78,13 @@ public class AddHostDialog extends JDialog
         }
     }
 
-    private void onCancel()
+    protected void onCancel()
     {
         dispose();
     }
 
-    private boolean fieldsEmpty()
+    protected boolean fieldsFilled()
     {
-        return ip.getText().equals("") && domain.getText().equals("");
+        return !ip.getText().equals("") || !domain.getText().equals("");
     }
 }

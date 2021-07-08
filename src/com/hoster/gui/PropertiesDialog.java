@@ -73,7 +73,7 @@ public class PropertiesDialog extends JDialog
         setVisible(true);
     }
 
-    private void setPropertiesConfig()
+    protected void setPropertiesConfig()
     {
         theme.setSelectedIndex(properties.get("theme").equals("light") ? 0 : 1);
         hostsFile.setText(properties.get("hosts_file"));
@@ -83,7 +83,7 @@ public class PropertiesDialog extends JDialog
         allowOverride.setText(properties.get("directory_allow_override"));
     }
 
-    private void onThemeSelection()
+    protected void onThemeSelection()
     {
         JOptionPane.showMessageDialog(
             this,
@@ -105,7 +105,7 @@ public class PropertiesDialog extends JDialog
         }
     }
 
-    private void onAccept()
+    protected void onAccept()
     {
         properties.clear();
         properties.put("theme", theme.getSelectedItem().toString().toLowerCase());
@@ -119,7 +119,7 @@ public class PropertiesDialog extends JDialog
         dispose();
     }
 
-    private void onCancel()
+    protected void onCancel()
     {
         dispose();
     }

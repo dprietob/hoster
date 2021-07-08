@@ -8,7 +8,6 @@ import com.hoster.gui.listeners.PropertiesListener;
 import com.hoster.gui.listeners.HostListener;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -22,8 +21,9 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     private List<Host> hostsList;
     private Map<String, String> propertiesMap;
     private JPanel domainPane;
-    private JButton addDomain;
-    private JButton deleteDomain;
+    private JButton addHost;
+    private JButton editHost;
+    private JButton deleteHost;
     private JButton virtualHost;
     private JButton mainConfig;
     private JButton about;
@@ -37,14 +37,18 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         setContentPane(domainPane);
         updateHostsTable();
 
-        addDomain.addActionListener(e -> onAddHostDialog());
-        deleteDomain.addActionListener(e -> onHostDeleted());
+        addHost.addActionListener(e -> onAddHostDialog());
+        editHost.addActionListener(e -> onEditHostDialog());
+        deleteHost.addActionListener(e -> onHostDeleted());
         virtualHost.addActionListener(e -> onVirtualHostDialog());
         mainConfig.addActionListener(e -> onMainConfigDialog());
         about.addActionListener(e -> onAboutDialog());
 
         // Call onAddHostDialog() on CTRL+N
         domainPane.registerKeyboardAction(e -> onAddHostDialog(), KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        // Call onEditHostDialog() on ENTER
+        domainPane.registerKeyboardAction(e -> onEditHostDialog(), KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         // Call onHostDeleted() on DEL
         domainPane.registerKeyboardAction(e -> onHostDeleted(), KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -70,28 +74,47 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
-    private void updateHostsTable()
+    protected void updateHostsTable()
     {
-        DefaultTableModel tableModel = new DefaultTableModel();
+        HostsTableModel tableModel = new HostsTableModel();
         tableModel.addColumn("IP");
         tableModel.addColumn("Domain");
 
         hostsTable.setModel(tableModel);
+        hostsTable.setDefaultRenderer(Object.class, new HostsTableRenderer(hostsList));
         hostsTable.getTableHeader().setReorderingAllowed(false);
+        hostsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         for (Host host : hostsList) {
             tableModel.addRow(new Object[]{host.getIp(), host.getDomain()});
         }
     }
 
-    private void onAddHostDialog()
+    protected void onAddHostDialog()
     {
         AddHostDialog dialog = new AddHostDialog(this);
         dialog.addHostListener(this);
         dialog.build();
     }
 
-    private void onVirtualHostDialog()
+    protected void onEditHostDialog()
+    {
+        int row = hostsTable.getSelectedRow();
+        if (row > -1) {
+            EditHostDialog dialog = new EditHostDialog(this, hostsList.get(row), row);
+            dialog.addHostListener(this);
+            dialog.build();
+        } else {
+            JOptionPane.showMessageDialog(
+                this,
+                "You must select a domain to edit it.",
+                "Edit host error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    protected void onVirtualHostDialog()
     {
         int row = hostsTable.getSelectedRow();
         if (row > -1) {
@@ -108,14 +131,14 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         }
     }
 
-    private void onMainConfigDialog()
+    protected void onMainConfigDialog()
     {
         PropertiesDialog dialog = new PropertiesDialog(this, propertiesMap);
         dialog.addConfigListener(this);
         dialog.build();
     }
 
-    private void onAboutDialog()
+    protected void onAboutDialog()
     {
         AboutDialog dialog = new AboutDialog(this);
         dialog.build();
@@ -125,6 +148,25 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     public void onHostAdded(Host host)
     {
         hostsList.add(host);
+
+        if (HostsFile.save(propertiesMap.get("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
+            updateHostsTable();
+        } else {
+            JOptionPane.showMessageDialog(
+                this,
+                "There was an error trying to update host file. Make sure the application has the necessary privileges.",
+                "Host file update error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    @Override
+    public void onHostEdited(Host host, int row)
+    {
+        hostsList.remove(row);
+        hostsList.add(row, host);
+
         if (HostsFile.save(propertiesMap.get("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
             updateHostsTable();
         } else {
