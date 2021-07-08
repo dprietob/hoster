@@ -24,7 +24,7 @@ public class HostsFile extends ConfigFile
                     if (line.length == 2) {
                         h = new Host();
                         h.setActive(isHostActive(line[0]));
-                        h.setIp(line[0]);
+                        h.setIp(line[0].replaceAll("#", ""));
                         h.setDomain(line[1]);
 
                         hostsList.add(h);
