@@ -1,6 +1,8 @@
 package com.hoster.gui.listeners;
 
+import java.util.Map;
+
 public interface PropertiesListener
 {
-    void onPropertiesUpdate();
+    void onPropertiesUpdate(Map<String, Object> propertiesMap);
 }

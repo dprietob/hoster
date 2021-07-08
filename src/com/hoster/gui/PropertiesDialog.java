@@ -1,5 +1,6 @@
 package com.hoster.gui;
 
+import com.hoster.data.Properties;
 import com.hoster.gui.listeners.PropertiesListener;
 
 import javax.swing.*;
@@ -7,11 +8,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PropertiesDialog extends JDialog
 {
-    private Map<String, String> properties;
+    private Properties properties;
     private PropertiesListener propertiesListener;
     private JFrame parent;
     private JPanel configPane;
@@ -24,13 +26,15 @@ public class PropertiesDialog extends JDialog
     private JButton findDirectoryPath;
     private JTextField require;
     private JTextField allowOverride;
+    private JTextField restartServerCommand;
+    private JCheckBox restartServer;
     private JButton accept;
     private JButton cancel;
 
-    public PropertiesDialog(JFrame p, Map<String, String> config)
+    public PropertiesDialog(JFrame p, Properties prop)
     {
         parent = p;
-        properties = config;
+        properties = prop;
 
         setContentPane(configPane);
         getRootPane().setDefaultButton(accept);
@@ -75,12 +79,14 @@ public class PropertiesDialog extends JDialog
 
     protected void setPropertiesConfig()
     {
-        theme.setSelectedIndex(properties.get("theme").equals("light") ? 0 : 1);
-        hostsFile.setText(properties.get("hosts_file"));
-        vhostsFile.setText(properties.get("vhost_file"));
-        directoryPath.setText(properties.get("directory_path"));
-        require.setText(properties.get("directory_require"));
-        allowOverride.setText(properties.get("directory_allow_override"));
+        theme.setSelectedIndex(properties.getString("theme").equals("light") ? 0 : 1);
+        hostsFile.setText(properties.getString("hosts_file"));
+        vhostsFile.setText(properties.getString("vhost_file"));
+        directoryPath.setText(properties.getMainDirectory().getPath());
+        require.setText(properties.getMainDirectory().getRequire());
+        allowOverride.setText(properties.getMainDirectory().getAllowOverride());
+        restartServer.setSelected(properties.getBoolean("restart_server"));
+        restartServerCommand.setText(properties.getString("restart_server_command"));
     }
 
     protected void onThemeSelection()
@@ -107,15 +113,17 @@ public class PropertiesDialog extends JDialog
 
     protected void onAccept()
     {
-        properties.clear();
-        properties.put("theme", theme.getSelectedItem().toString().toLowerCase());
-        properties.put("hosts_file", hostsFile.getText());
-        properties.put("vhost_file", vhostsFile.getText());
-        properties.put("directory_path", directoryPath.getText());
-        properties.put("directory_require", require.getText());
-        properties.put("directory_allow_override", allowOverride.getText());
+        Map<String, Object> propertiesMap = new HashMap<>();
+        propertiesMap.put("theme", theme.getSelectedItem().toString().toLowerCase());
+        propertiesMap.put("hosts_file", hostsFile.getText());
+        propertiesMap.put("vhost_file", vhostsFile.getText());
+        propertiesMap.put("directory_path", directoryPath.getText());
+        propertiesMap.put("directory_require", require.getText());
+        propertiesMap.put("directory_allow_override", allowOverride.getText());
+        propertiesMap.put("restart_server", restartServer.isSelected() ? "1" : "0");
+        propertiesMap.put("restart_server_command", restartServerCommand.getText());
 
-        propertiesListener.onPropertiesUpdate();
+        propertiesListener.onPropertiesUpdate(propertiesMap);
         dispose();
     }
 

@@ -1,6 +1,7 @@
 package com.hoster.gui;
 
-import com.hoster.Host;
+import com.hoster.data.Host;
+import com.hoster.data.Properties;
 import com.hoster.files.HostsFile;
 import com.hoster.files.PropertiesFile;
 import com.hoster.files.VHostsFile;
@@ -19,30 +20,30 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     private final String APP_VERSION = "0.1.0";
 
     private List<Host> hostsList;
-    private Map<String, String> propertiesMap;
+    private Properties properties;
     private JPanel domainPane;
-    private JButton addHost;
-    private JButton editHost;
-    private JButton deleteHost;
-    private JButton virtualHost;
-    private JButton mainConfig;
-    private JButton about;
+    private JButton addHostBtn;
+    private JButton editHostBtn;
+    private JButton deleteHostBtn;
+    private JButton virtualHostBtn;
+    private JButton mainConfigBtn;
+    private JButton aboutBtn;
     private JTable hostsTable;
 
-    public HostFrame(List<Host> hostsConfig, Map<String, String> propertiesConfig)
+    public HostFrame(List<Host> hl, Properties prop)
     {
-        hostsList = hostsConfig;
-        propertiesMap = propertiesConfig;
+        hostsList = hl;
+        properties = prop;
 
         setContentPane(domainPane);
         updateHostsTable();
 
-        addHost.addActionListener(e -> onAddHostDialog());
-        editHost.addActionListener(e -> onEditHostDialog());
-        deleteHost.addActionListener(e -> onHostDeleted());
-        virtualHost.addActionListener(e -> onVirtualHostDialog());
-        mainConfig.addActionListener(e -> onMainConfigDialog());
-        about.addActionListener(e -> onAboutDialog());
+        addHostBtn.addActionListener(e -> onAddHostDialog());
+        editHostBtn.addActionListener(e -> onEditHostDialog());
+        deleteHostBtn.addActionListener(e -> onHostDeleted());
+        virtualHostBtn.addActionListener(e -> onVirtualHostDialog());
+        mainConfigBtn.addActionListener(e -> onMainConfigDialog());
+        aboutBtn.addActionListener(e -> onAboutDialog());
 
         // Call onAddHostDialog() on CTRL+N
         domainPane.registerKeyboardAction(e -> onAddHostDialog(), KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -90,6 +91,11 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         }
     }
 
+    protected void restartServer()
+    {
+
+    }
+
     protected void onAddHostDialog()
     {
         AddHostDialog dialog = new AddHostDialog(this);
@@ -133,7 +139,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
     protected void onMainConfigDialog()
     {
-        PropertiesDialog dialog = new PropertiesDialog(this, propertiesMap);
+        PropertiesDialog dialog = new PropertiesDialog(this, properties);
         dialog.addConfigListener(this);
         dialog.build();
     }
@@ -149,8 +155,9 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     {
         hostsList.add(host);
 
-        if (HostsFile.save(propertiesMap.get("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
+        if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
             updateHostsTable();
+            restartServer();
         } else {
             JOptionPane.showMessageDialog(
                 this,
@@ -167,8 +174,9 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         hostsList.remove(row);
         hostsList.add(row, host);
 
-        if (HostsFile.save(propertiesMap.get("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
+        if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
             updateHostsTable();
+            restartServer();
         } else {
             JOptionPane.showMessageDialog(
                 this,
@@ -193,8 +201,10 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
             if (option == JOptionPane.YES_OPTION) {
                 hostsList.remove(row);
-                if (HostsFile.save(propertiesMap.get("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
+                // TODO: debe actualizar VHostFile tambien
+                if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
                     updateHostsTable();
+                    restartServer();
                 } else {
                     JOptionPane.showMessageDialog(
                         this,
@@ -220,7 +230,9 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         hostsList.remove(row);
         hostsList.add(row, host);
 
-        if (!VHostsFile.save(propertiesMap.get("vhosts_file"), hostsList, APP_NAME, APP_VERSION)) {
+        if (VHostsFile.save(properties.getString("vhosts_file"), hostsList, properties.getMainDirectory(), APP_NAME, APP_VERSION)) {
+            restartServer();
+        } else {
             JOptionPane.showMessageDialog(
                 this,
                 "There was an error trying to update virtual-host file. Make sure the application has the necessary privileges.",
@@ -231,9 +243,13 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     }
 
     @Override
-    public void onPropertiesUpdate()
+    public void onPropertiesUpdate(Map<String, Object> propertiesMap)
     {
-        if (!PropertiesFile.save(propertiesMap)) {
+        properties.setPropertiesMap(propertiesMap);
+
+        if (PropertiesFile.save(properties)) {
+            restartServer();
+        } else {
             JOptionPane.showMessageDialog(
                 this,
                 "An error occurred while trying to save the properties file. Please make sure the application has the necessary privileges.",

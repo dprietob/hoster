@@ -1,6 +1,6 @@
 package com.hoster.gui.listeners;
 
-import com.hoster.Host;
+import com.hoster.data.Host;
 
 public interface HostListener
 {

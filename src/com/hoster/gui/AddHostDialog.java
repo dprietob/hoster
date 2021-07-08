@@ -1,6 +1,6 @@
 package com.hoster.gui;
 
-import com.hoster.Host;
+import com.hoster.data.Host;
 import com.hoster.gui.listeners.HostListener;
 
 import javax.swing.*;

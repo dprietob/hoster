@@ -1,4 +1,4 @@
-package com.hoster;
+package com.hoster.data;
 
 public class Host
 {
@@ -14,8 +14,7 @@ public class Host
     private String port;
     private String errorLog;
     private String customLog;
-    private String require;
-    private String allowOverride;
+    private Directory directory;
 
     public Host()
     {
@@ -122,24 +121,14 @@ public class Host
         this.customLog = customLog;
     }
 
-    public String getRequire()
+    public Directory getDirectory()
     {
-        return require;
+        return directory;
     }
 
-    public void setRequire(String require)
+    public void setDirectory(Directory directory)
     {
-        this.require = require;
-    }
-
-    public String getAllowOverride()
-    {
-        return allowOverride;
-    }
-
-    public void setAllowOverride(String allowOverride)
-    {
-        this.allowOverride = allowOverride;
+        this.directory = directory;
     }
 
     // TODO

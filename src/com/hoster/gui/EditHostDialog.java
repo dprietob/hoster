@@ -1,12 +1,8 @@
 package com.hoster.gui;
 
-import com.hoster.Host;
-import com.hoster.gui.listeners.HostListener;
+import com.hoster.data.Host;
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class EditHostDialog extends AddHostDialog
 {

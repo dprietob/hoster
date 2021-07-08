@@ -1,5 +1,7 @@
 package com.hoster.files;
 
+import com.hoster.data.Properties;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -13,9 +15,9 @@ public class PropertiesFile extends ConfigFile
     private static final String CONFIG_FILE = "config.properties";
 
 
-    public static Map<String, String> load()
+    public static Map<String, Object> load()
     {
-        Map<String, String> initialConfig = getEmptyProperties();
+        Map<String, Object> initialConfig = getEmptyProperties();
         try {
             File file = new File(CONFIG_FILE);
             if (file.exists()) {
@@ -35,43 +37,43 @@ public class PropertiesFile extends ConfigFile
         return initialConfig;
     }
 
-    public static boolean save(Map<String, String> config)
+    public static boolean save(Properties properties)
     {
         if (deleteCurrentFile(CONFIG_FILE)) {
             if (createNewFile(CONFIG_FILE)) {
-                return writeFile(config);
+                return writeFile(properties);
             }
         }
         return false;
     }
 
-    private static boolean writeFile(Map<String, String> config)
+    private static boolean writeFile(Properties properties)
     {
         try {
-            if (!config.isEmpty()) {
-                FileWriter fileWriter = new FileWriter(CONFIG_FILE);
-                fileWriter.write("# Do not modify manually! \n");
-                for (Map.Entry<String, String> entry : config.entrySet()) {
-                    fileWriter.write(entry.getKey() + "=" + entry.getValue() + "\n");
-                }
-                fileWriter.close();
-                return true;
+            FileWriter fileWriter = new FileWriter(CONFIG_FILE);
+            fileWriter.write("# Do not modify manually! \n");
+            for (Map.Entry<String, Object> entry : properties.getPropertiesMap().entrySet()) {
+                fileWriter.write(entry.getKey() + "=" + entry.getValue().toString() + "\n");
             }
+            fileWriter.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    private static Map<String, String> getEmptyProperties()
+    private static Map<String, Object> getEmptyProperties()
     {
-        Map<String, String> properties = new HashMap<>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put("theme", "light");
         properties.put("hosts_file", "");
         properties.put("vhost_file", "");
         properties.put("directory_path", "");
         properties.put("directory_require", "");
         properties.put("directory_allow_override", "");
+        properties.put("restart_server", "0");
+        properties.put("restart_server_command", "");
 
         return properties;
     }

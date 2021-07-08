@@ -1,6 +1,6 @@
 package com.hoster.gui;
 
-import com.hoster.Host;
+import com.hoster.data.Host;
 import com.hoster.gui.listeners.HostListener;
 
 import javax.swing.*;
@@ -47,13 +47,7 @@ public class VHostDialog extends JDialog
         });
 
         // Call onCancel() on ESCAPE
-        vhostPane.registerKeyboardAction(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        vhostPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     public void addHostListener(HostListener listener)
@@ -74,7 +68,7 @@ public class VHostDialog extends JDialog
 
     protected void onAccept()
     {
-        if (!fieldsEmpty()) {
+        if (fieldsFilled()) {
             host.setServerAdmin(serverAdmin.getText());
             host.setServerName(serverName.getText());
             host.setDocumentRoot(documentRoot.getText());
@@ -82,8 +76,8 @@ public class VHostDialog extends JDialog
             host.setPort(port.getText());
             host.setErrorLog(errorLog.getText());
             host.setCustomLog(customLog.getText());
-            host.setRequire(require.getText());
-            host.setAllowOverride(allowOverride.getText());
+            host.getDirectory().setRequire(require.getText());
+            host.getDirectory().setAllowOverride(allowOverride.getText());
 
             hostListener.onVirtualHostUpdated(host, hostPosition);
             dispose();
@@ -101,8 +95,8 @@ public class VHostDialog extends JDialog
         dispose();
     }
 
-    protected boolean fieldsEmpty()
+    protected boolean fieldsFilled()
     {
-        return serverName.getText().equals("") && documentRoot.getText().equals("");
+        return !serverName.getText().equals("") || !documentRoot.getText().equals("");
     }
 }

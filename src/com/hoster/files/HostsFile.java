@@ -1,12 +1,14 @@
 package com.hoster.files;
 
-import com.hoster.Host;
+import com.hoster.data.Host;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class HostsFile extends ConfigFile
 {

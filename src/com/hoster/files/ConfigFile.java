@@ -21,7 +21,7 @@ public class ConfigFile
             return file.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 }
