@@ -2,13 +2,15 @@ package com.hoster.gui;
 
 import com.hoster.data.Host;
 import com.hoster.data.Properties;
+import com.hoster.data.Server;
 import com.hoster.files.HostsFile;
 import com.hoster.files.PropertiesFile;
 import com.hoster.files.VHostsFile;
-import com.hoster.gui.listeners.PropertiesListener;
 import com.hoster.gui.listeners.HostListener;
+import com.hoster.gui.listeners.PropertiesListener;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -18,6 +20,10 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 {
     private final String APP_NAME = "Hoster";
     private final String APP_VERSION = "0.1.0";
+
+    private final int SERVER_ACTIVED = 1;
+    private final int SERVER_STOPPED = 2;
+    private final int SERVER_RESTARTING = 3;
 
     private List<Host> hostsList;
     private Properties properties;
@@ -29,6 +35,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     private JButton mainConfigBtn;
     private JButton aboutBtn;
     private JTable hostsTable;
+    private JLabel serverStatus;
 
     public HostFrame(List<Host> hl, Properties prop)
     {
@@ -93,7 +100,38 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
     protected void restartServer()
     {
+        String cmd = properties.getString("restart_server_command");
+        if (properties.getBoolean("restart_server") && cmd.length() > 0) {
+            setServerStatus(SERVER_RESTARTING);
+            if (Server.restart(cmd) && Server.isActive()) {
+                setServerStatus(SERVER_ACTIVED);
+            } else {
+                setServerStatus(SERVER_STOPPED);
+            }
+        }
+    }
 
+    protected void setServerStatus(int status)
+    {
+        String text = "unknoww";
+        Color color = UIManager.getColor("Label.foreground");
+
+        switch (status) {
+            case SERVER_ACTIVED:
+                text = "actived";
+                color = Color.GREEN.darker();
+                break;
+            case SERVER_STOPPED:
+                text = "stopped";
+                color = Color.RED;
+                break;
+            case SERVER_RESTARTING:
+                text = "restarting...";
+                color = Color.ORANGE.darker();
+                break;
+        }
+        serverStatus.setText(text);
+        serverStatus.setForeground(color);
     }
 
     protected void onAddHostDialog()
