@@ -208,22 +208,24 @@
               <text value="Restart server when configuration changes"/>
             </properties>
           </component>
-          <component id="bbd18" class="javax.swing.JLabel">
+          <component id="e552e" class="javax.swing.JLabel">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Engine"/>
+              <text value="Status command"/>
             </properties>
           </component>
-          <component id="55fcb" class="javax.swing.JComboBox" binding="server">
+          <component id="d4f18" class="javax.swing.JTextField" binding="statusCommand">
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
             </constraints>
             <properties>
-              <model>
-                <item value="Apache"/>
-              </model>
+              <editable value="false"/>
+              <enabled value="false"/>
+              <text value="service apache2 status"/>
             </properties>
           </component>
         </children>

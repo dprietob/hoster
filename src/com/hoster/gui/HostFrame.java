@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.List;
 import java.util.Map;
 
@@ -32,9 +34,11 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     private JButton editHostBtn;
     private JButton deleteHostBtn;
     private JButton virtualHostBtn;
+    private JButton phpBtn;
     private JButton mainConfigBtn;
     private JButton aboutBtn;
     private JTable hostsTable;
+    private JButton restartServerBtn;
     private JLabel serverStatus;
 
     public HostFrame(List<Host> hl, Properties prop)
@@ -44,13 +48,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
         setContentPane(domainPane);
         updateHostsTable();
-
-        addHostBtn.addActionListener(e -> onAddHostDialog());
-        editHostBtn.addActionListener(e -> onEditHostDialog());
-        deleteHostBtn.addActionListener(e -> onHostDeleted());
-        virtualHostBtn.addActionListener(e -> onVirtualHostDialog());
-        mainConfigBtn.addActionListener(e -> onMainConfigDialog());
-        aboutBtn.addActionListener(e -> onAboutDialog());
+        updateServerStatus();
 
         // Call onAddHostDialog() on CTRL+N
         domainPane.registerKeyboardAction(e -> onAddHostDialog(), KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -64,11 +62,41 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         // Call onVirtualHostDialog() on CTRL+H
         domainPane.registerKeyboardAction(e -> onVirtualHostDialog(), KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
+        // Call onPhpConfigDialog() on CTRL+H
+        domainPane.registerKeyboardAction(e -> onPhpConfigDialog(), KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
         // Call onMainConfigDialog() on CTRL+Q
         domainPane.registerKeyboardAction(e -> onMainConfigDialog(), KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        // Call )() on F1
+        // Call onAboutDialog() on F1
         domainPane.registerKeyboardAction(e -> onAboutDialog(), KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        // Call onMainConfigDialog() on CTRL+R
+        domainPane.registerKeyboardAction(e -> onRestartServer(true), KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        addHostBtn.addActionListener(e -> onAddHostDialog());
+        editHostBtn.addActionListener(e -> onEditHostDialog());
+        deleteHostBtn.addActionListener(e -> onHostDeleted());
+        virtualHostBtn.addActionListener(e -> onVirtualHostDialog());
+        phpBtn.addActionListener(e -> onPhpConfigDialog());
+        mainConfigBtn.addActionListener(e -> onMainConfigDialog());
+        aboutBtn.addActionListener(e -> onAboutDialog());
+        restartServerBtn.addActionListener(e -> onRestartServer(true));
+
+        addWindowFocusListener(new WindowFocusListener()
+        {
+            @Override
+            public void windowGainedFocus(WindowEvent windowEvent)
+            {
+                updateServerStatus();
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent windowEvent)
+            {
+
+            }
+        });
     }
 
     public void build()
@@ -98,16 +126,12 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         }
     }
 
-    protected void restartServer()
+    protected void updateServerStatus()
     {
-        String cmd = properties.getString("restart_server_command");
-        if (properties.getBoolean("restart_server") && cmd.length() > 0) {
-            setServerStatus(SERVER_RESTARTING);
-            if (Server.restart(cmd) && Server.isActive()) {
-                setServerStatus(SERVER_ACTIVED);
-            } else {
-                setServerStatus(SERVER_STOPPED);
-            }
+        if (Server.isActive()) {
+            setServerStatus(SERVER_ACTIVED);
+        } else {
+            setServerStatus(SERVER_STOPPED);
         }
     }
 
@@ -175,6 +199,11 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         }
     }
 
+    protected void onPhpConfigDialog()
+    {
+        // TODO
+    }
+
     protected void onMainConfigDialog()
     {
         PropertiesDialog dialog = new PropertiesDialog(this, properties);
@@ -188,6 +217,21 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         dialog.build();
     }
 
+    protected void onRestartServer()
+    {
+        onRestartServer(false);
+    }
+
+    protected void onRestartServer(boolean force)
+    {
+        String cmd = properties.getString("restart_server_command");
+        if (force || (properties.getBoolean("restart_server") && cmd.length() > 0)) {
+            setServerStatus(SERVER_RESTARTING);
+            Server.restart(cmd);
+            updateServerStatus();
+        }
+    }
+
     @Override
     public void onHostAdded(Host host)
     {
@@ -195,7 +239,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
         if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
             updateHostsTable();
-            restartServer();
+            onRestartServer();
         } else {
             JOptionPane.showMessageDialog(
                 this,
@@ -214,7 +258,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
         if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
             updateHostsTable();
-            restartServer();
+            onRestartServer();
         } else {
             JOptionPane.showMessageDialog(
                 this,
@@ -242,7 +286,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
                 // TODO: debe actualizar VHostFile tambien
                 if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
                     updateHostsTable();
-                    restartServer();
+                    onRestartServer();
                 } else {
                     JOptionPane.showMessageDialog(
                         this,
@@ -269,7 +313,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         hostsList.add(row, host);
 
         if (VHostsFile.save(properties.getString("vhosts_file"), hostsList, properties.getMainDirectory(), APP_NAME, APP_VERSION)) {
-            restartServer();
+            onRestartServer();
         } else {
             JOptionPane.showMessageDialog(
                 this,
@@ -286,7 +330,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         properties.setPropertiesMap(propertiesMap);
 
         if (PropertiesFile.save(properties)) {
-            restartServer();
+            onRestartServer();
         } else {
             JOptionPane.showMessageDialog(
                 this,

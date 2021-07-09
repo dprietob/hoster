@@ -10,81 +10,6 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="36a9c" layout-manager="GridLayoutManager" row-count="1" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="5" right="0"/>
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children>
-          <component id="92666" class="javax.swing.JButton" binding="deleteHostBtn">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <icon value="com/hoster/gui/icons/delete.png"/>
-              <text value="Delete"/>
-              <toolTipText value="Delete selected host (del)"/>
-            </properties>
-          </component>
-          <component id="eddf" class="javax.swing.JButton" binding="addHostBtn">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <icon value="com/hoster/gui/icons/add.png"/>
-              <text value="Add"/>
-              <toolTipText value="Add new host (Ctrl+N)"/>
-            </properties>
-          </component>
-          <hspacer id="b3dea">
-            <constraints>
-              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
-          <component id="eaf13" class="javax.swing.JButton" binding="mainConfigBtn">
-            <constraints>
-              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <icon value="com/hoster/gui/icons/settings.png"/>
-              <text value=""/>
-              <toolTipText value="Main configuration (Ctrl+Q)"/>
-            </properties>
-          </component>
-          <component id="80192" class="javax.swing.JButton" binding="virtualHostBtn">
-            <constraints>
-              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <icon value="com/hoster/gui/icons/vhost.png"/>
-              <text value="Virtual host"/>
-              <toolTipText value="Configure virtual host for selected domain (Ctrl+H)"/>
-            </properties>
-          </component>
-          <component id="e60c" class="javax.swing.JButton" binding="aboutBtn">
-            <constraints>
-              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <icon value="com/hoster/gui/icons/help.png"/>
-              <text value=""/>
-              <toolTipText value="About (F1)"/>
-            </properties>
-          </component>
-          <component id="b3729" class="javax.swing.JButton" binding="editHostBtn">
-            <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <icon value="com/hoster/gui/icons/edit.png"/>
-              <text value="Edit"/>
-              <toolTipText value="Edit selected host (space)"/>
-            </properties>
-          </component>
-        </children>
-      </grid>
       <scrollpane id="950c5">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -100,7 +25,7 @@
           </component>
         </children>
       </scrollpane>
-      <grid id="c0549" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="c0549" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="5" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -110,7 +35,7 @@
         <children>
           <component id="792c1" class="javax.swing.JLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Server status:"/>
@@ -118,7 +43,7 @@
           </component>
           <component id="20290" class="javax.swing.JLabel" binding="serverStatus">
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="unknow"/>
@@ -126,11 +51,101 @@
           </component>
           <hspacer id="df336">
             <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
+          <component id="7fc54" class="javax.swing.JButton" binding="restartServerBtn">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <icon value="com/hoster/gui/icons/restart.png"/>
+              <text value=""/>
+              <toolTipText value="Restart server manually (Ctrl+R)"/>
+            </properties>
+          </component>
         </children>
       </grid>
+      <toolbar id="88764">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="-1" height="20"/>
+          </grid>
+        </constraints>
+        <properties>
+          <floatable value="false"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="eddf" class="javax.swing.JButton" binding="addHostBtn">
+            <constraints/>
+            <properties>
+              <icon value="com/hoster/gui/icons/add.png"/>
+              <text value="Add"/>
+              <toolTipText value="Add new host (Ctrl+N)"/>
+            </properties>
+          </component>
+          <component id="92666" class="javax.swing.JButton" binding="deleteHostBtn">
+            <constraints/>
+            <properties>
+              <icon value="com/hoster/gui/icons/delete.png"/>
+              <text value="Delete"/>
+              <toolTipText value="Delete selected host (del)"/>
+            </properties>
+          </component>
+          <component id="b3729" class="javax.swing.JButton" binding="editHostBtn">
+            <constraints/>
+            <properties>
+              <icon value="com/hoster/gui/icons/edit.png"/>
+              <text value="Edit"/>
+              <toolTipText value="Edit selected host (space)"/>
+            </properties>
+          </component>
+          <component id="9db19" class="javax.swing.JToolBar$Separator">
+            <constraints/>
+            <properties/>
+          </component>
+          <component id="80192" class="javax.swing.JButton" binding="virtualHostBtn">
+            <constraints/>
+            <properties>
+              <icon value="com/hoster/gui/icons/vhost.png"/>
+              <text value="Virtual host"/>
+              <toolTipText value="Configure virtual host for selected domain (Ctrl+H)"/>
+            </properties>
+          </component>
+          <component id="4dfc2" class="javax.swing.JToolBar$Separator">
+            <constraints/>
+            <properties/>
+          </component>
+          <component id="a4f47" class="javax.swing.JButton" binding="phpBtn">
+            <constraints/>
+            <properties>
+              <icon value="com/hoster/gui/icons/php.png"/>
+              <text value="PHP"/>
+              <toolTipText value="PHP configuration (Ctrl+P)"/>
+            </properties>
+          </component>
+          <hspacer id="b3dea">
+            <constraints/>
+          </hspacer>
+          <component id="eaf13" class="javax.swing.JButton" binding="mainConfigBtn">
+            <constraints/>
+            <properties>
+              <icon value="com/hoster/gui/icons/settings.png"/>
+              <text value=""/>
+              <toolTipText value="Main configuration (Ctrl+Q)"/>
+            </properties>
+          </component>
+          <component id="e60c" class="javax.swing.JButton" binding="aboutBtn">
+            <constraints/>
+            <properties>
+              <icon value="com/hoster/gui/icons/help.png"/>
+              <text value=""/>
+              <toolTipText value="About (F1)"/>
+            </properties>
+          </component>
+        </children>
+      </toolbar>
     </children>
   </grid>
 </form>

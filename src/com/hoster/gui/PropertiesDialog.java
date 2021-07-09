@@ -30,7 +30,7 @@ public class PropertiesDialog extends JDialog
     private JCheckBox restartServer;
     private JButton accept;
     private JButton cancel;
-    private JComboBox server;
+    private JTextField statusCommand;
 
     public PropertiesDialog(JFrame p, Properties prop)
     {

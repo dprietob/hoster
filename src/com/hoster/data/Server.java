@@ -1,38 +1,50 @@
 package com.hoster.data;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class Server
 {
-    public static boolean restart(String cmd)
+    private static final String STATUS_COMMAND = "service apache2 status";
+
+    public static void restart(String cmd)
     {
         try {
             Runtime run = Runtime.getRuntime();
             Process pr = run.exec(cmd);
             pr.waitFor();
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
     }
 
     public static boolean isActive()
     {
-        return true;
-//        String STATE_PREFIX = "STATE              : ";
-//
-//        String s = executeCommand("sc query \"" + service + "\"");
-//// check that the temp string contains the status prefix
-//        int ix = s.indexOf(STATE_PREFIX);
-//        if (ix >= 0) {
-//            // compare status number to one of the states
-//            String stateStr = s.substring(ix + STATE_PREFIX.length(), ix + STATE_PREFIX.length() + 1);
-//            int state = Integer.parseInt(stateStr);
-//            switch (state) {
-//                case (1): // service stopped
-//                    break;
-//                case (4): // service started
-//                    break;
-//            }
-//        }
+        try {
+            Runtime run = Runtime.getRuntime();
+            Process pr = run.exec(STATUS_COMMAND);
+
+            InputStream is = pr.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+
+            String line;
+            StringBuilder scOutput = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                scOutput.append(line).append("\n");
+            }
+
+            if (scOutput.toString().contains("apache2.service")) {
+                if (scOutput.toString().contains("Active: active (running)")) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }
