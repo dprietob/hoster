@@ -8,6 +8,8 @@ public class AboutDialog extends JDialog
     private JFrame parent;
     private JPanel aboutPane;
     private JButton close;
+    private JButton reportBug;
+    private JEditorPane hosterIsASimpleEditorPane;
 
     public AboutDialog(JFrame p)
     {
