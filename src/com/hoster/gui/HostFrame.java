@@ -40,6 +40,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     private JTable hostsTable;
     private JButton restartServerBtn;
     private JLabel serverStatus;
+    private JButton serverStatsBtn;
 
     public HostFrame(List<Host> hl, Properties prop)
     {
@@ -74,6 +75,9 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         // Call onMainConfigDialog() on CTRL+R
         domainPane.registerKeyboardAction(e -> onRestartServer(true), KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
+        // Call onServerStatsDialog() on CTRL+U
+        domainPane.registerKeyboardAction(e -> onServerStats(), KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
         addHostBtn.addActionListener(e -> onAddHostDialog());
         editHostBtn.addActionListener(e -> onEditHostDialog());
         deleteHostBtn.addActionListener(e -> onHostDeleted());
@@ -82,6 +86,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         mainConfigBtn.addActionListener(e -> onMainConfigDialog());
         aboutBtn.addActionListener(e -> onAboutDialog());
         restartServerBtn.addActionListener(e -> onRestartServer(true));
+        serverStatsBtn.addActionListener(e -> onServerStats());
 
         addWindowFocusListener(new WindowFocusListener()
         {
@@ -230,6 +235,11 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
             Server.restart(cmd);
             updateServerStatus();
         }
+    }
+
+    protected void onServerStats()
+    {
+        // TODO
     }
 
     @Override
