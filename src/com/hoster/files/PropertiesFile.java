@@ -73,7 +73,6 @@ public class PropertiesFile extends ConfigFile
         properties.put("directory_require", "");
         properties.put("directory_allow_override", "");
         properties.put("restart_server", "0");
-        properties.put("restart_server_command", "");
 
         return properties;
     }

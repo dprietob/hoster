@@ -30,7 +30,6 @@ public class PropertiesDialog extends JDialog
     private JCheckBox restartServer;
     private JButton accept;
     private JButton cancel;
-    private JTextField statusCommand;
 
     public PropertiesDialog(JFrame p, Properties prop)
     {
@@ -87,7 +86,6 @@ public class PropertiesDialog extends JDialog
         require.setText(properties.getMainDirectory().getRequire());
         allowOverride.setText(properties.getMainDirectory().getAllowOverride());
         restartServer.setSelected(properties.getBoolean("restart_server"));
-        restartCommand.setText(properties.getString("restart_server_command"));
     }
 
     protected void onThemeSelection()
@@ -122,7 +120,6 @@ public class PropertiesDialog extends JDialog
         propertiesMap.put("directory_require", require.getText());
         propertiesMap.put("directory_allow_override", allowOverride.getText());
         propertiesMap.put("restart_server", restartServer.isSelected() ? "1" : "0");
-        propertiesMap.put("restart_server_command", restartCommand.getText());
 
         propertiesListener.onPropertiesUpdate(propertiesMap);
         dispose();

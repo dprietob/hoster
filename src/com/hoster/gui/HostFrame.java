@@ -88,20 +88,20 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         restartServerBtn.addActionListener(e -> onRestartServer(true));
         serverStatsBtn.addActionListener(e -> onServerStats());
 
-        addWindowFocusListener(new WindowFocusListener()
-        {
-            @Override
-            public void windowGainedFocus(WindowEvent windowEvent)
-            {
-                updateServerStatus();
-            }
-
-            @Override
-            public void windowLostFocus(WindowEvent windowEvent)
-            {
-
-            }
-        });
+//        addWindowFocusListener(new WindowFocusListener()
+//        {
+//            @Override
+//            public void windowGainedFocus(WindowEvent windowEvent)
+//            {
+//                updateServerStatus();
+//            }
+//
+//            @Override
+//            public void windowLostFocus(WindowEvent windowEvent)
+//            {
+//
+//            }
+//        });
     }
 
     public void build()
@@ -229,10 +229,9 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
     protected void onRestartServer(boolean force)
     {
-        String cmd = properties.getString("restart_server_command");
-        if (force || (properties.getBoolean("restart_server") && cmd.length() > 0)) {
+        if (force || properties.getBoolean("restart_server")) {
             setServerStatus(SERVER_RESTARTING);
-            Server.restart(cmd);
+            Server.restart();
             updateServerStatus();
         }
     }

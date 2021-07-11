@@ -6,11 +6,79 @@ import java.io.InputStreamReader;
 
 public class Server
 {
-    private static final String STATUS_COMMAND = "service apache2 status";
+    private static final String LINUX_STATUS_COMMAND = "service apache2 status";
+    private static final String LINUX_RESTART_COMMAND = "service apache2 restart";
 
-    public static void restart(String cmd)
+    private static final String WINDOWS_STATUS_COMMAND = "tasklist /fi \"imagename eq httpd.exe\"";
+    private static final String WINDOWS_RESTART_COMMAND = "C:\\xampp\\apache\\bin\\httpd -k restart";
+    private static final String WINDOWS_INSTALL_COMMAND = "C:\\xampp\\apache\\bin\\httpd -k install";
+
+    public static void restart()
+    {
+        switch (getOS()) {
+            case LINUX:
+                exeCommand(LINUX_RESTART_COMMAND);
+                break;
+            case WINDOWS:
+                restartWindowsServer();
+                break;
+            case MAC:
+                // TODO
+                break;
+            default:
+                // TODO
+        }
+    }
+
+    private static void restartWindowsServer()
+    {
+        System.out.println("iniciando servicio windows");
+        String cmdOutput = getCommandOutput(WINDOWS_RESTART_COMMAND);
+        System.out.println(cmdOutput);
+        if (cmdOutput != null && cmdOutput.contains("No installed service")) {
+            System.out.println("Servicio no instalado");
+            exeCommand(WINDOWS_INSTALL_COMMAND);
+            exeCommand(WINDOWS_RESTART_COMMAND);
+        }
+    }
+
+    public static boolean isActive()
+    {
+        switch (getOS()) {
+            case LINUX:
+                return isLinuxServerActive();
+            case WINDOWS:
+                return isWindowsServerActive();
+            case MAC:
+                return isMacServerActive();
+        }
+        return false;
+    }
+
+    private static boolean isLinuxServerActive()
+    {
+        String cmdOutput = getCommandOutput(LINUX_STATUS_COMMAND);
+
+        return cmdOutput != null
+            && cmdOutput.contains("Active: active (running)");
+    }
+
+    private static boolean isWindowsServerActive()
+    {
+        String cmdOutput = getCommandOutput(WINDOWS_STATUS_COMMAND);
+        return cmdOutput != null && cmdOutput.contains("httpd.exe");
+    }
+
+    private static boolean isMacServerActive()
+    {
+        // TODO
+        return false;
+    }
+
+    private static void exeCommand(String cmd)
     {
         try {
+            System.out.println(cmd);
             Runtime run = Runtime.getRuntime();
             Process pr = run.exec(cmd);
             pr.waitFor();
@@ -19,11 +87,11 @@ public class Server
         }
     }
 
-    public static boolean isActive()
+    private static String getCommandOutput(String cmd)
     {
         try {
             Runtime run = Runtime.getRuntime();
-            Process pr = run.exec(STATUS_COMMAND);
+            Process pr = run.exec(cmd);
 
             InputStream is = pr.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
@@ -35,16 +103,33 @@ public class Server
             while ((line = br.readLine()) != null) {
                 scOutput.append(line).append("\n");
             }
+            pr.waitFor();
 
-            if (scOutput.toString().contains("apache2.service")) {
-                if (scOutput.toString().contains("Active: active (running)")) {
-                    return true;
-                }
-            }
+            is.close();
+            isr.close();
+            br.close();
+
+            return scOutput.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
 
-        return false;
+    private static OperatingSystem getOS()
+    {
+        String osName = System.getProperty("os.name").toLowerCase();
+
+        if (osName.contains("windows")) {
+            return OperatingSystem.WINDOWS;
+
+        } else if (osName.contains("linux")) {
+            return OperatingSystem.LINUX;
+
+        } else if (osName.contains("mac")) {
+            return OperatingSystem.MAC;
+        }
+
+        return OperatingSystem.UNKNOW;
     }
 }

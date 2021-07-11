@@ -53,7 +53,6 @@ public class Properties
         properties.put("hosts_file", propertiesMap.get("hosts_file"));
         properties.put("vhost_file", propertiesMap.get("vhost_file"));
         properties.put("restart_server", propertiesMap.get("restart_server").equals("1"));
-        properties.put("restart_server_command", propertiesMap.get("restart_server_command"));
         properties.put("main_directory", mainDirectory);
     }
 }
