@@ -10,17 +10,17 @@ public class Server
     private static final String LINUX_RESTART_COMMAND = "service apache2 restart";
 
     private static final String WINDOWS_STATUS_COMMAND = "tasklist /fi \"imagename eq httpd.exe\"";
-    private static final String WINDOWS_RESTART_COMMAND = "C:\\xampp\\apache\\bin\\httpd -k restart";
-    private static final String WINDOWS_INSTALL_COMMAND = "C:\\xampp\\apache\\bin\\httpd -k install";
+    private static final String WINDOWS_RESTART_COMMAND = "\\bin\\httpd -k restart"; // runservice
+    private static final String WINDOWS_INSTALL_COMMAND = "\\bin\\httpd -k install";
 
-    public static void restart()
+    public static void restart(String apachePath)
     {
         switch (getOS()) {
             case LINUX:
                 exeCommand(LINUX_RESTART_COMMAND);
                 break;
             case WINDOWS:
-                restartWindowsServer();
+                restartWindowsServer(apachePath);
                 break;
             case MAC:
                 // TODO
@@ -30,15 +30,20 @@ public class Server
         }
     }
 
-    private static void restartWindowsServer()
+    private static void restartWindowsServer(String apachePath)
     {
-        System.out.println("iniciando servicio windows");
-        String cmdOutput = getCommandOutput(WINDOWS_RESTART_COMMAND);
-        System.out.println(cmdOutput);
-        if (cmdOutput != null && cmdOutput.contains("No installed service")) {
-            System.out.println("Servicio no instalado");
-            exeCommand(WINDOWS_INSTALL_COMMAND);
-            exeCommand(WINDOWS_RESTART_COMMAND);
+        if (apachePath != null) {
+            String cmdOutput = getCommandOutput(apachePath + WINDOWS_RESTART_COMMAND);
+            System.out.println(cmdOutput);
+            if (cmdOutput != null && cmdOutput.contains("No installed service")) {
+                System.out.println("Servicio no instalado");
+                exeCommand(WINDOWS_INSTALL_COMMAND);
+                exeCommand(WINDOWS_RESTART_COMMAND);
+            } else {
+                // TODO
+            }
+        } else {
+            // TODO
         }
     }
 
@@ -116,7 +121,7 @@ public class Server
         return null;
     }
 
-    private static OperatingSystem getOS()
+    public static OperatingSystem getOS()
     {
         String osName = System.getProperty("os.name").toLowerCase();
 

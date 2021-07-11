@@ -1,6 +1,8 @@
 package com.hoster.gui;
 
+import com.hoster.data.OperatingSystem;
 import com.hoster.data.Properties;
+import com.hoster.data.Server;
 import com.hoster.gui.listeners.PropertiesListener;
 
 import javax.swing.*;
@@ -26,7 +28,9 @@ public class PropertiesDialog extends JDialog
     private JButton findDirectoryPath;
     private JTextField require;
     private JTextField allowOverride;
-    private JTextField restartCommand;
+    private JTextField apachePath;
+    private JButton findApacheBtn;
+    private JPanel apachePane;
     private JCheckBox restartServer;
     private JButton accept;
     private JButton cancel;
@@ -44,6 +48,7 @@ public class PropertiesDialog extends JDialog
         findHostsFile.addActionListener(e -> onFind(hostsFile, JFileChooser.FILES_ONLY));
         findVhostFile.addActionListener(e -> onFind(vhostsFile, JFileChooser.FILES_ONLY));
         findDirectoryPath.addActionListener(e -> onFind(directoryPath, JFileChooser.DIRECTORIES_ONLY));
+        findApacheBtn.addActionListener(e -> onFind(apachePath, JFileChooser.DIRECTORIES_ONLY));
         accept.addActionListener(e -> onAccept());
         cancel.addActionListener(e -> onCancel());
 
@@ -59,6 +64,10 @@ public class PropertiesDialog extends JDialog
 
         // Call onCancel() on ESCAPE
         configPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        if (Server.getOS() != OperatingSystem.WINDOWS) {
+            apachePane.setVisible(false);
+        }
     }
 
     public void addConfigListener(PropertiesListener listener)
@@ -85,6 +94,7 @@ public class PropertiesDialog extends JDialog
         directoryPath.setText(properties.getMainDirectory().getPath());
         require.setText(properties.getMainDirectory().getRequire());
         allowOverride.setText(properties.getMainDirectory().getAllowOverride());
+        apachePath.setText(properties.getString("apache_path"));
         restartServer.setSelected(properties.getBoolean("restart_server"));
     }
 
@@ -119,6 +129,7 @@ public class PropertiesDialog extends JDialog
         propertiesMap.put("directory_path", directoryPath.getText());
         propertiesMap.put("directory_require", require.getText());
         propertiesMap.put("directory_allow_override", allowOverride.getText());
+        propertiesMap.put("apache_path", apachePath.getText());
         propertiesMap.put("restart_server", restartServer.isSelected() ? "1" : "0");
 
         propertiesListener.onPropertiesUpdate(propertiesMap);

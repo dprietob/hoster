@@ -72,6 +72,7 @@ public class PropertiesFile extends ConfigFile
         properties.put("directory_path", "");
         properties.put("directory_require", "");
         properties.put("directory_allow_override", "");
+        properties.put("apache_path", "");
         properties.put("restart_server", "0");
 
         return properties;

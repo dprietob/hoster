@@ -231,7 +231,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     {
         if (force || properties.getBoolean("restart_server")) {
             setServerStatus(SERVER_RESTARTING);
-            Server.restart();
+            Server.restart(properties.getString("apache_path"));
             updateServerStatus();
         }
     }
