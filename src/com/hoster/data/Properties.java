@@ -51,7 +51,7 @@ public class Properties
         properties.clear();
         properties.put("theme", propertiesMap.get("theme"));
         properties.put("hosts_file", propertiesMap.get("hosts_file"));
-        properties.put("vhost_file", propertiesMap.get("vhost_file"));
+        properties.put("vhosts_file", propertiesMap.get("vhosts_file"));
         properties.put("apache_path", propertiesMap.get("apache_path"));
         properties.put("restart_server", propertiesMap.get("restart_server").equals("1"));
         properties.put("main_directory", mainDirectory);

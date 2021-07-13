@@ -1,5 +1,10 @@
 package com.hoster.data;
 
+import com.sun.xml.internal.messaging.saaj.soap.GifDataContentHandler;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class Host
 {
     private final String DEFAULT_PORT = "80";
@@ -18,7 +23,7 @@ public class Host
 
     public Host()
     {
-        active = true;
+        directory = new Directory();
     }
 
     public boolean isActive()
@@ -79,6 +84,7 @@ public class Host
     public void setDocumentRoot(String documentRoot)
     {
         this.documentRoot = documentRoot;
+        directory.setPath(documentRoot);
     }
 
     public String getServerAlias()
@@ -131,9 +137,45 @@ public class Host
         this.directory = directory;
     }
 
-    // TODO
+    public boolean isValid()
+    {
+        return getDocumentRoot() != null
+            && !getDocumentRoot().isEmpty()
+            && getServerName() != null
+            && !getServerName().isEmpty();
+    }
+
     public String parseToXML()
     {
-        return null;
+        if (isValid()) {
+            String port = getPort() != null ? getPort() : DEFAULT_PORT;
+            StringBuilder out = new StringBuilder();
+            Map<String, String> data = new LinkedHashMap<>();
+            Directory directory = getDirectory();
+
+            data.put("ServerAdmin", getServerAdmin());
+            data.put("DocumentRoot", getDocumentRoot());
+            data.put("ServerName", getServerName());
+            data.put("ServerAlias", getServerAlias());
+            data.put("ErrorLog", getErrorLog());
+            data.put("CustomLog", getCustomLog());
+
+            out.append("<VirtualHost *:").append(port).append(">").append("\n");
+            insertTagsToXML(out, data);
+            out.append(directory.parseToXML(true));
+            out.append("</VirtualHost>").append("\n");
+
+            return out.toString();
+        }
+        return "";
+    }
+
+    private void insertTagsToXML(StringBuilder out, Map<String, String> data)
+    {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                out.append("\t").append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ public class AboutDialog extends JDialog implements MouseListener
 {
     private final String DEVELOPER_URL = "https://github.com/dprietob";
     private final String FLATLAF_URL = "https://github.com/DevCharly";
-    private final String FARMFRESH_URL = "https://www.fatcow.com";
+    private final String FARMFRESH_URL = "https://www.fatcow.com/free-icons";
     private final String REPORT_URL = "https://github.com/dprietob/hoster/issues";
     private final Color LINK_COLOR = new Color(42, 155, 187);
 

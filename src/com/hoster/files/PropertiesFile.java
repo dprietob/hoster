@@ -68,7 +68,7 @@ public class PropertiesFile extends ConfigFile
         Map<String, Object> properties = new HashMap<>();
         properties.put("theme", "light");
         properties.put("hosts_file", "");
-        properties.put("vhost_file", "");
+        properties.put("vhosts_file", "");
         properties.put("directory_path", "");
         properties.put("directory_require", "");
         properties.put("directory_allow_override", "");

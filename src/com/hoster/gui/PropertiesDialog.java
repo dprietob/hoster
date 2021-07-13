@@ -90,7 +90,7 @@ public class PropertiesDialog extends JDialog
     {
         theme.setSelectedIndex(properties.getString("theme").equals("light") ? 0 : 1);
         hostsFile.setText(properties.getString("hosts_file"));
-        vhostsFile.setText(properties.getString("vhost_file"));
+        vhostsFile.setText(properties.getString("vhosts_file"));
         directoryPath.setText(properties.getMainDirectory().getPath());
         require.setText(properties.getMainDirectory().getRequire());
         allowOverride.setText(properties.getMainDirectory().getAllowOverride());
@@ -125,7 +125,7 @@ public class PropertiesDialog extends JDialog
         Map<String, Object> propertiesMap = new HashMap<>();
         propertiesMap.put("theme", theme.getSelectedItem().toString().toLowerCase());
         propertiesMap.put("hosts_file", hostsFile.getText());
-        propertiesMap.put("vhost_file", vhostsFile.getText());
+        propertiesMap.put("vhosts_file", vhostsFile.getText());
         propertiesMap.put("directory_path", directoryPath.getText());
         propertiesMap.put("directory_require", require.getText());
         propertiesMap.put("directory_allow_override", allowOverride.getText());

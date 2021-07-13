@@ -75,6 +75,6 @@ public class VHostsFile extends HostsFile
 
     private static String getMainDirectoryXML()
     {
-        return null;
+        return "";
     }
 }
