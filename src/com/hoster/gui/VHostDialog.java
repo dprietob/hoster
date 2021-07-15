@@ -1,10 +1,19 @@
 package com.hoster.gui;
 
+import com.hoster.data.Host;
+import com.hoster.gui.listeners.HostListener;
+
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class VHostDialog extends JDialog
 {
+    private HostListener hostListener;
+    private Host host;
+    private int hostPosition;
+    private JFrame parent;
     private JPanel vhostPane;
     private JTextField serverAdmin;
     private JTextField serverName;
@@ -18,13 +27,15 @@ public class VHostDialog extends JDialog
     private JTextField require;
     private JTextField allowOverride;
 
-    public VHostDialog()
+    public VHostDialog(JFrame p, Host h, int pos)
     {
         setContentPane(vhostPane);
-        setModal(true);
         getRootPane().setDefaultButton(accept);
 
-        accept.addActionListener(e -> onOK());
+        parent = p;
+        host = h;
+        hostPosition = pos;
+        accept.addActionListener(e -> onAccept());
         cancel.addActionListener(e -> onCancel());
 
         // Call onCancel() when cross is clicked
@@ -38,13 +49,12 @@ public class VHostDialog extends JDialog
         });
 
         // Call onCancel() on ESCAPE
-        vhostPane.registerKeyboardAction(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        vhostPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    }
+
+    public void addHostListener(HostListener listener)
+    {
+        hostListener = listener;
     }
 
     public void build()
@@ -52,18 +62,44 @@ public class VHostDialog extends JDialog
         pack();
         setIconImage(new ImageIcon(getClass().getResource("icons/vhost.png")).getImage());
         setTitle("Virtual host configuration");
+        setLocationRelativeTo(parent);
+        setModal(true);
         setResizable(false);
         setVisible(true);
-        setLocationRelativeTo(null);
     }
 
-    private void onOK()
+    protected void onAccept()
+    {
+        if (fieldsFilled()) {
+            host.setServerAdmin(serverAdmin.getText());
+            host.setServerName(serverName.getText());
+            host.setDocumentRoot(documentRoot.getText());
+            host.setServerAlias(serverAlias.getText());
+            host.setPort(port.getText());
+            host.setErrorLog(errorLog.getText());
+            host.setCustomLog(customLog.getText());
+            host.getDirectory().setRequire(require.getText());
+            host.getDirectory().setAllowOverride(allowOverride.getText());
+
+            hostListener.onVirtualHostUpdated(host, hostPosition);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(
+                this,
+                "Server name and document root fields can not be empty.",
+                "Empty fields",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    protected void onCancel()
     {
         dispose();
     }
 
-    private void onCancel()
+    protected boolean fieldsFilled()
     {
-        dispose();
+        return !serverName.getText().equals("")
+            || !documentRoot.getText().equals("");
     }
 }
