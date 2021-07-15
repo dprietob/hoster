@@ -14,10 +14,19 @@ some Apache Server basics statistics.
 
 ## Installation
 
-For Windows, Hoster uses `httpd -k restart` to restart Apache Server. 
+Obviously, in order to use Hoster, it's necessary have installed Apache Server 
+and PHP in your computer. 
+
+In Windows systems, Hoster uses `httpd -k restart` to restart Apache Server. 
 If this command fails, Hoster runs `httpd -k install` which register Apache
 as a Service in the system. This can be avoided if `httpd.exe` is added to
 `PATH` being accessible through console globally.
+
+For Linux systems, Hoster uses `service apache2 status` and `service apache2 restart`
+commands to manage Apache Server, so they need to be accessible through terminal.
+
+To compile, it's necessary add `lib/flatlaf-1.3.jar` as library in your IDE or
+code editor and configure `Java 1.8` as minimum JDK.
 
 ## Usage
 
@@ -46,6 +55,11 @@ PRs are welcome. To begin developing, do this:
 $ git clone git@github.com:dprietob/hoster.git
 $ cd hoster
 ```
+
+## Dependencies
+
+Hoster use [FlatLaf](https://github.com/JFormDesigner/FlatLaf) to GUI customization, 
+also some [FarmFresh icons](https://www.fatcow.com/free-icons). 
 
 ## License
 
