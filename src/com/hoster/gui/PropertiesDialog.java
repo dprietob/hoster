@@ -22,6 +22,7 @@ public class PropertiesDialog extends JDialog
     private JComboBox theme;
     private JTextField hostsFile;
     private JButton findHostsFile;
+    private JCheckBox consoleLog;
     private JTextField vhostsFile;
     private JButton findVhostFile;
     private JTextField directoryPath;
@@ -49,6 +50,7 @@ public class PropertiesDialog extends JDialog
         findVhostFile.addActionListener(e -> onFind(vhostsFile, JFileChooser.FILES_ONLY));
         findDirectoryPath.addActionListener(e -> onFind(directoryPath, JFileChooser.DIRECTORIES_ONLY));
         findApacheBtn.addActionListener(e -> onFind(apachePath, JFileChooser.DIRECTORIES_ONLY));
+        consoleLog.addActionListener(e -> onShowConsoleLog());
         accept.addActionListener(e -> onAccept());
         cancel.addActionListener(e -> onCancel());
 
@@ -91,6 +93,7 @@ public class PropertiesDialog extends JDialog
         theme.setSelectedIndex(properties.getString("theme").equals("light") ? 0 : 1);
         hostsFile.setText(properties.getString("hosts_file"));
         vhostsFile.setText(properties.getString("vhosts_file"));
+        consoleLog.setSelected(properties.getBoolean("console_log"));
         directoryPath.setText(properties.getMainDirectory().getPath());
         require.setText(properties.getMainDirectory().getRequire());
         allowOverride.setText(properties.getMainDirectory().getAllowOverride());
@@ -106,6 +109,11 @@ public class PropertiesDialog extends JDialog
             "Theme changed",
             JOptionPane.INFORMATION_MESSAGE
         );
+    }
+
+    protected void onShowConsoleLog()
+    {
+        propertiesListener.onShowConsoleLog(consoleLog.isSelected());
     }
 
     private void onFind(JTextField field, int mode)
@@ -126,6 +134,7 @@ public class PropertiesDialog extends JDialog
         propertiesMap.put("theme", theme.getSelectedItem().toString().toLowerCase());
         propertiesMap.put("hosts_file", hostsFile.getText());
         propertiesMap.put("vhosts_file", vhostsFile.getText());
+        propertiesMap.put("console_log", consoleLog.isSelected() ? "1" : "0");
         propertiesMap.put("directory_path", directoryPath.getText());
         propertiesMap.put("directory_require", require.getText());
         propertiesMap.put("directory_allow_override", allowOverride.getText());

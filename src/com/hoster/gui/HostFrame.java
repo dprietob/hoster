@@ -354,4 +354,10 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
                 JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    @Override
+    public void onShowConsoleLog(boolean show)
+    {
+        // TODO
+    }
 }
