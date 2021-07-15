@@ -292,10 +292,18 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
             if (option == JOptionPane.YES_OPTION) {
                 hostsList.remove(row);
-                // TODO: debe actualizar VHostFile tambien
                 if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
-                    updateHostsTable();
-                    onRestartServer();
+                    if (VHostsFile.save(properties.getString("vhosts_file"), hostsList, APP_NAME, APP_VERSION)) {
+                        updateHostsTable();
+                        onRestartServer();
+                    } else {
+                        JOptionPane.showMessageDialog(
+                            this,
+                            "There was an error trying to update virtual-host file. Make sure the application has the necessary privileges.",
+                            "Virtual-Host file update error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                    }
                 } else {
                     JOptionPane.showMessageDialog(
                         this,
