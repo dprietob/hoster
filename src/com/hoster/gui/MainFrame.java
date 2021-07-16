@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-public class HostFrame extends JFrame implements HostListener, PropertiesListener, ConsoleListener
+public class MainFrame extends JFrame implements HostListener, PropertiesListener, ConsoleListener
 {
     private final String APP_NAME = "Hoster";
     private final String APP_VERSION = "0.1.0";
@@ -56,7 +56,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     private JLabel serverStatus;
     private JButton serverStatsBtn;
 
-    public HostFrame(Properties prop, List<Host> hl)
+    public MainFrame(Properties prop, List<Host> hl)
     {
         properties = prop;
         hostsList = hl;

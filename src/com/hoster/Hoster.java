@@ -7,7 +7,7 @@ import com.hoster.data.Properties;
 import com.hoster.files.HostsFile;
 import com.hoster.files.PropertiesFile;
 import com.hoster.files.VHostsFile;
-import com.hoster.gui.HostFrame;
+import com.hoster.gui.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +26,7 @@ public class Hoster
             List<Host> hostsList = hostsFile.load(properties.getString("hosts_file"));
 
             setTheme(properties.getString("theme"));
-            HostFrame frame = new HostFrame(properties, hostsList);
+            MainFrame frame = new MainFrame(properties, hostsList);
             frame.build();
         });
     }
