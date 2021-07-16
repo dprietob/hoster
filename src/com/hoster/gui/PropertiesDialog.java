@@ -17,6 +17,7 @@ public class PropertiesDialog extends JDialog
 {
     private Properties properties;
     private PropertiesListener propertiesListener;
+
     private JFrame parent;
     private JPanel configPane;
     private JComboBox theme;

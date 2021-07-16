@@ -8,9 +8,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class AddHostDialog extends JDialog
+public class HostDialog extends JDialog
 {
+    private Host host;
+    private int hostPosition;
+    private boolean isNew;
     protected HostListener hostListener;
+
     private JFrame parent;
     private JPanel addHostPane;
     protected JTextField ip;
@@ -19,12 +23,15 @@ public class AddHostDialog extends JDialog
     private JButton cancel;
     private JButton accept;
 
-    public AddHostDialog(JFrame p)
+    public HostDialog(JFrame p, Host h, int pos)
     {
         parent = p;
+        host = h;
+        hostPosition = pos;
 
         setContentPane(addHostPane);
         getRootPane().setDefaultButton(accept);
+        setHostConfig();
 
         accept.addActionListener(e -> onAccept());
         cancel.addActionListener(e -> onCancel());
@@ -50,24 +57,47 @@ public class AddHostDialog extends JDialog
 
     public void build()
     {
+        if (isNew) {
+            setIconImage(new ImageIcon(getClass().getResource("icons/add.png")).getImage());
+            setTitle("Add new host");
+        } else {
+            setIconImage(new ImageIcon(getClass().getResource("icons/edit.png")).getImage());
+            setTitle("Edit host");
+        }
+
         pack();
-        setIconImage(new ImageIcon(getClass().getResource("icons/add.png")).getImage());
-        setTitle("Add new host");
         setLocationRelativeTo(parent);
         setModal(true);
         setResizable(false);
         setVisible(true);
     }
 
+    protected void setHostConfig()
+    {
+        if (host == null) {
+            host = new Host();
+            isNew = true;
+        } else {
+            active.setSelected(host.isActive());
+            ip.setText(host.getIp());
+            domain.setText(host.getDomain());
+            isNew = false;
+        }
+    }
+
     protected void onAccept()
     {
         if (fieldsFilled()) {
-            Host host = new Host();
             host.setActive(active.isSelected());
             host.setIp(ip.getText());
             host.setDomain(domain.getText());
 
-            hostListener.onHostAdded(host);
+            if (isNew) {
+                hostListener.onHostAdded(host);
+            } else {
+                hostListener.onHostEdited(host, hostPosition);
+            }
+
             dispose();
         } else {
             JOptionPane.showMessageDialog(

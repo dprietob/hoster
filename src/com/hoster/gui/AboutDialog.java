@@ -16,6 +16,7 @@ public class AboutDialog extends JDialog implements MouseListener
     private final Color LINK_COLOR = new Color(42, 155, 187);
 
     private ConsoleListener consoleListener;
+
     private JFrame parent;
     private JPanel aboutPane;
     private JLabel developerLink;

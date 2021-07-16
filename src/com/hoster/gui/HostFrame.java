@@ -264,7 +264,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
     protected void onAddHostDialog()
     {
-        AddHostDialog dialog = new AddHostDialog(this);
+        HostDialog dialog = new HostDialog(this, null, 0);
         dialog.addHostListener(this);
         dialog.build();
     }
@@ -273,7 +273,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     {
         int row = hostsTable.getSelectedRow();
         if (row > -1) {
-            EditHostDialog dialog = new EditHostDialog(this, hostsList.get(row), row);
+            HostDialog dialog = new HostDialog(this, hostsList.get(row), row);
             dialog.addHostListener(this);
             dialog.build();
         } else {
