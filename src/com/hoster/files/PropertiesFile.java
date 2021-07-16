@@ -18,17 +18,18 @@ public class PropertiesFile extends ConfigFile
     public Map<String, Object> load()
     {
         Map<String, Object> initialConfig = getEmptyProperties();
+        File file = new File(CONFIG_FILE);
+
         try {
-            File file = new File(CONFIG_FILE);
             if (file.exists()) {
-                Scanner myReader = new Scanner(file);
-                while (myReader.hasNextLine()) {
-                    String[] line = myReader.nextLine().split("=");
+                Scanner reader = new Scanner(file);
+                while (reader.hasNextLine()) {
+                    String[] line = reader.nextLine().split("=");
                     if (line.length == 2) {
                         initialConfig.put(line[0].trim(), line[1].trim());
                     }
                 }
-                myReader.close();
+                reader.close();
             }
         } catch (FileNotFoundException e) {
             consoleListener.onConsoleError(e.getMessage());

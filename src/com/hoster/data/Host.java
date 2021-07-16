@@ -161,7 +161,7 @@ public class Host
             out.append("<VirtualHost *:").append(port).append(">").append("\n");
             insertTagsToXML(out, data);
             out.append(directory.parseToXML(true));
-            out.append("</VirtualHost>").append("\n");
+            out.append("</VirtualHost>");
 
             return out.toString();
         }

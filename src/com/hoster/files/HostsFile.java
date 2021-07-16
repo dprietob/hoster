@@ -15,24 +15,24 @@ public class HostsFile extends ConfigFile
     public List<Host> load(String fileName)
     {
         List<Host> hostsList = new ArrayList<>();
+        File file = new File(fileName);
+        Host h;
 
         try {
-            Host h;
-            File file = new File(fileName);
             if (file.exists()) {
-                Scanner myReader = new Scanner(file);
-                while (myReader.hasNextLine()) {
-                    String[] line = myReader.nextLine().split(" ");
+                Scanner reader = new Scanner(file);
+                while (reader.hasNextLine()) {
+                    String[] line = reader.nextLine().split(" ");
                     if (line.length == 2) {
                         h = new Host();
-                        h.setActive(isHostActive(line[0]));
-                        h.setIp(line[0].replaceAll("#", ""));
-                        h.setDomain(line[1]);
+                        h.setActive(isHostActive(line[0].trim()));
+                        h.setIp(line[0].trim().replaceAll("#", ""));
+                        h.setDomain(line[1].trim());
 
                         hostsList.add(h);
                     }
                 }
-                myReader.close();
+                reader.close();
             }
         } catch (FileNotFoundException e) {
             consoleListener.onConsoleError(e.getMessage());
