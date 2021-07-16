@@ -15,7 +15,7 @@ public class PropertiesFile extends ConfigFile
     private static final String CONFIG_FILE = "config.properties";
 
 
-    public static Map<String, Object> load()
+    public Map<String, Object> load()
     {
         Map<String, Object> initialConfig = getEmptyProperties();
         try {
@@ -31,13 +31,13 @@ public class PropertiesFile extends ConfigFile
                 myReader.close();
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
 
         return initialConfig;
     }
 
-    public static boolean save(Properties properties)
+    public boolean save(Properties properties)
     {
         if (deleteCurrentFile(CONFIG_FILE)) {
             if (createNewFile(CONFIG_FILE)) {
@@ -47,7 +47,7 @@ public class PropertiesFile extends ConfigFile
         return false;
     }
 
-    private static boolean writeFile(Properties properties)
+    private boolean writeFile(Properties properties)
     {
         try {
             FileWriter fileWriter = new FileWriter(CONFIG_FILE);
@@ -58,12 +58,12 @@ public class PropertiesFile extends ConfigFile
             fileWriter.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
         return false;
     }
 
-    private static Map<String, Object> getEmptyProperties()
+    private Map<String, Object> getEmptyProperties()
     {
         Map<String, Object> properties = new HashMap<>();
         properties.put("theme", "light");

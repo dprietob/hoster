@@ -1,18 +1,43 @@
 package com.hoster.data;
 
+import com.hoster.files.HostsFile;
+import com.hoster.files.PropertiesFile;
+import com.hoster.files.VHostsFile;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Properties
 {
+    private PropertiesFile propertiesFile;
+    private HostsFile hostsFile;
+    private VHostsFile vHostsFile;
     private Map<String, Object> propertiesMap;
     private Map<String, Object> properties;
 
-    public Properties(Map<String, Object> map)
+    public Properties(PropertiesFile pf, HostsFile hf, VHostsFile vf)
     {
-        propertiesMap = map;
+        propertiesFile = pf;
+        hostsFile = hf;
+        vHostsFile = vf;
+        propertiesMap = pf.load();
         properties = new HashMap<>();
         parseToProperties();
+    }
+
+    public PropertiesFile getPropertiesFile()
+    {
+        return propertiesFile;
+    }
+
+    public HostsFile getHostsFile()
+    {
+        return hostsFile;
+    }
+
+    public VHostsFile getVHostsFile()
+    {
+        return vHostsFile;
     }
 
     public Map<String, Object> getPropertiesMap()

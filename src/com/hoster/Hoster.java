@@ -6,6 +6,7 @@ import com.hoster.data.Host;
 import com.hoster.data.Properties;
 import com.hoster.files.HostsFile;
 import com.hoster.files.PropertiesFile;
+import com.hoster.files.VHostsFile;
 import com.hoster.gui.HostFrame;
 
 import javax.swing.*;
@@ -17,11 +18,15 @@ public class Hoster
     public static void main(String[] args)
     {
         EventQueue.invokeLater(() -> {
-            Properties properties = new Properties(PropertiesFile.load());
-            List<Host> hostsList = HostsFile.load(properties.getString("hosts_file"));
+            PropertiesFile propertiesFile = new PropertiesFile();
+            HostsFile hostsFile = new HostsFile();
+            VHostsFile vHostsFile = new VHostsFile();
+
+            Properties properties = new Properties(propertiesFile, hostsFile, vHostsFile);
+            List<Host> hostsList = hostsFile.load(properties.getString("hosts_file"));
 
             setTheme(properties.getString("theme"));
-            HostFrame frame = new HostFrame(hostsList, properties);
+            HostFrame frame = new HostFrame(properties, hostsList);
             frame.build();
         });
     }

@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class HostsFile extends ConfigFile
 {
-    public static List<Host> load(String fileName)
+    public List<Host> load(String fileName)
     {
         List<Host> hostsList = new ArrayList<>();
 
@@ -35,13 +35,13 @@ public class HostsFile extends ConfigFile
                 myReader.close();
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
 
         return hostsList;
     }
 
-    public static boolean save(String fileName, List<Host> hostsList, String appName, String appVersion)
+    public boolean save(String fileName, List<Host> hostsList, String appName, String appVersion)
     {
         if (deleteCurrentFile(fileName)) {
             if (createNewFile(fileName)) {
@@ -51,7 +51,7 @@ public class HostsFile extends ConfigFile
         return false;
     }
 
-    private static boolean writeFile(String fileName, List<Host> hostsList, String appName, String appVersion)
+    private boolean writeFile(String fileName, List<Host> hostsList, String appName, String appVersion)
     {
         try {
             if (!hostsList.isEmpty()) {
@@ -67,12 +67,12 @@ public class HostsFile extends ConfigFile
                 return true;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
         return false;
     }
 
-    private static boolean isHostActive(String ip)
+    private boolean isHostActive(String ip)
     {
         return ip.charAt(0) != '#';
     }

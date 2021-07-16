@@ -1,5 +1,7 @@
 package com.hoster.gui;
 
+import com.hoster.gui.listeners.ConsoleListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,6 +15,7 @@ public class AboutDialog extends JDialog implements MouseListener
     private final String REPORT_URL = "https://github.com/dprietob/hoster/issues";
     private final Color LINK_COLOR = new Color(42, 155, 187);
 
+    private ConsoleListener consoleListener;
     private JFrame parent;
     private JPanel aboutPane;
     private JLabel developerLink;
@@ -48,6 +51,11 @@ public class AboutDialog extends JDialog implements MouseListener
         aboutPane.registerKeyboardAction(e -> onClose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
+    public void addConsoleListener(ConsoleListener listener)
+    {
+        consoleListener = listener;
+    }
+
     public void build()
     {
         pack();
@@ -67,7 +75,7 @@ public class AboutDialog extends JDialog implements MouseListener
                 desktop.browse(new URL(url).toURI());
                 return true;
             } catch (Exception e) {
-                e.printStackTrace();
+                consoleListener.onConsoleError(e.getMessage());
             }
         }
         return false;

@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class VHostsFile extends HostsFile
 {
     // TODO
-    public static List<Host> load(String fileName)
+    public List<Host> load(String fileName)
     {
         List<Host> hostsList = new ArrayList<>();
 
@@ -36,13 +36,13 @@ public class VHostsFile extends HostsFile
                 myReader.close();
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
 
         return hostsList;
     }
 
-    public static boolean save(String fileName, List<Host> hostsList, Directory mainDirectory, String appName, String appVersion)
+    public boolean save(String fileName, List<Host> hostsList, Directory mainDirectory, String appName, String appVersion)
     {
         if (deleteCurrentFile(fileName)) {
             if (createNewFile(fileName)) {
@@ -52,7 +52,7 @@ public class VHostsFile extends HostsFile
         return false;
     }
 
-    private static boolean writeFile(String fileName, List<Host> hostsList, String appName, String appVersion)
+    private boolean writeFile(String fileName, List<Host> hostsList, String appName, String appVersion)
     {
         try {
             if (!hostsList.isEmpty()) {
@@ -68,12 +68,12 @@ public class VHostsFile extends HostsFile
                 return true;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
         return false;
     }
 
-    private static String getMainDirectoryXML()
+    private String getMainDirectoryXML()
     {
         return "";
     }

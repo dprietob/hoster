@@ -36,7 +36,7 @@ public class PropertiesDialog extends JDialog
     private JButton accept;
     private JButton cancel;
 
-    public PropertiesDialog(JFrame p, Properties prop)
+    public PropertiesDialog(JFrame p, Properties prop, OperatingSystem os)
     {
         parent = p;
         properties = prop;
@@ -50,7 +50,6 @@ public class PropertiesDialog extends JDialog
         findVhostFile.addActionListener(e -> onFind(vhostsFile, JFileChooser.FILES_ONLY));
         findDirectoryPath.addActionListener(e -> onFind(directoryPath, JFileChooser.DIRECTORIES_ONLY));
         findApacheBtn.addActionListener(e -> onFind(apachePath, JFileChooser.DIRECTORIES_ONLY));
-        consoleLog.addActionListener(e -> onShowConsoleLog());
         accept.addActionListener(e -> onAccept());
         cancel.addActionListener(e -> onCancel());
 
@@ -67,7 +66,7 @@ public class PropertiesDialog extends JDialog
         // Call onCancel() on ESCAPE
         configPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        if (Server.getOS() != OperatingSystem.WINDOWS) {
+        if (os != OperatingSystem.WINDOWS) {
             apachePane.setVisible(false);
         }
     }
@@ -111,11 +110,6 @@ public class PropertiesDialog extends JDialog
         );
     }
 
-    protected void onShowConsoleLog()
-    {
-        propertiesListener.onShowConsoleLog(consoleLog.isSelected());
-    }
-
     private void onFind(JTextField field, int mode)
     {
         JFileChooser fileChooser = new JFileChooser();
@@ -123,6 +117,7 @@ public class PropertiesDialog extends JDialog
         fileChooser.setFileSelectionMode(mode);
         fileChooser.setCurrentDirectory(new File(field.getText()));
         int selection = fileChooser.showOpenDialog(field);
+
         if (selection == JFileChooser.APPROVE_OPTION) {
             field.setText(fileChooser.getSelectedFile().getAbsolutePath());
         }
