@@ -42,7 +42,7 @@ public class VHostsFile extends HostsFile
         return hostsList;
     }
 
-    public boolean save(String fileName, List<Host> hostsList, Directory mainDirectory, String appName, String appVersion)
+    public boolean save(String fileName, Directory mainDirectory, List<Host> hostsList, String appName, String appVersion)
     {
         if (deleteCurrentFile(fileName)) {
             if (createNewFile(fileName)) {
