@@ -15,6 +15,8 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -107,20 +109,20 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         restartServerBtn.addActionListener(e -> onRestartServer(true));
         serverStatsBtn.addActionListener(e -> onServerStats());
 
-//        addWindowFocusListener(new WindowFocusListener()
-//        {
-//            @Override
-//            public void windowGainedFocus(WindowEvent windowEvent)
-//            {
-//                updateServerStatus();
-//            }
-//
-//            @Override
-//            public void windowLostFocus(WindowEvent windowEvent)
-//            {
-//
-//            }
-//        });
+        addWindowFocusListener(new WindowFocusListener()
+        {
+            @Override
+            public void windowGainedFocus(WindowEvent windowEvent)
+            {
+                updateServerStatus(false);
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent windowEvent)
+            {
+
+            }
+        });
     }
 
     public void build()
@@ -157,12 +159,23 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
     protected void updateServerStatus()
     {
+        updateServerStatus(true);
+    }
+
+    protected void updateServerStatus(boolean notifyConsole)
+    {
         if (server.isActive()) {
             setServerStatus(SERVER_ACTIVED);
-            onConsoleInfo("Server active");
+
+            if (notifyConsole) {
+                onConsoleInfo("Server active");
+            }
         } else {
             setServerStatus(SERVER_STOPPED);
-            onConsoleError("Server stopped");
+
+            if (notifyConsole) {
+                onConsoleError("Server stopped");
+            }
         }
     }
 
