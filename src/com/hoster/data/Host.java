@@ -9,7 +9,6 @@ public class Host
 
     private boolean active;
     private String ip;
-    private String domain;
     private String serverAdmin;
     private String serverName;
     private String documentRoot;
@@ -34,6 +33,18 @@ public class Host
         this.active = active;
     }
 
+    public HostStatus getStatus()
+    {
+        if (!hasDomainData()) {
+            return HostStatus.NO_DOMAIN;
+
+        } else if (!hasVirtualHostData()) {
+            return HostStatus.NO_VHOST;
+        }
+
+        return HostStatus.ALL_OK;
+    }
+
     public String getIp()
     {
         return ip;
@@ -42,16 +53,6 @@ public class Host
     public void setIp(String ip)
     {
         this.ip = ip;
-    }
-
-    public String getDomain()
-    {
-        return domain;
-    }
-
-    public void setDomain(String domain)
-    {
-        this.domain = domain;
     }
 
     public String getServerAdmin()
@@ -97,7 +98,7 @@ public class Host
 
     public String getPort()
     {
-        return port;
+        return (port != null) ? port : DEFAULT_PORT;
     }
 
     public void setPort(String port)
@@ -135,7 +136,15 @@ public class Host
         this.directory = directory;
     }
 
-    public boolean isValid()
+    private boolean hasDomainData()
+    {
+        return getIp() != null
+            && !getIp().isEmpty()
+            && getServerName() != null
+            && !getServerName().isEmpty();
+    }
+
+    private boolean hasVirtualHostData()
     {
         return getDocumentRoot() != null
             && !getDocumentRoot().isEmpty()
@@ -143,10 +152,24 @@ public class Host
             && !getServerName().isEmpty();
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Host host = (Host) obj;
+        return serverName.equals(host.serverName);
+    }
+
     public String parseToXML()
     {
-        if (isValid()) {
-            String port = getPort() != null ? getPort() : DEFAULT_PORT;
+        if (hasVirtualHostData()) {
             StringBuilder out = new StringBuilder();
             Map<String, String> data = new LinkedHashMap<>();
             Directory directory = getDirectory();
@@ -158,7 +181,7 @@ public class Host
             data.put("ErrorLog", getErrorLog());
             data.put("CustomLog", getCustomLog());
 
-            out.append("<VirtualHost *:").append(port).append(">").append("\n");
+            out.append("<VirtualHost *:").append(getPort()).append(">").append("\n");
             insertTagsToXML(out, data);
             out.append(directory.parseToXML(true));
             out.append("</VirtualHost>");

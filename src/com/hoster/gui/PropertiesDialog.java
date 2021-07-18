@@ -2,7 +2,6 @@ package com.hoster.gui;
 
 import com.hoster.data.OperatingSystem;
 import com.hoster.data.Properties;
-import com.hoster.data.Server;
 import com.hoster.gui.listeners.PropertiesListener;
 
 import javax.swing.*;

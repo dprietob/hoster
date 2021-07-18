@@ -80,7 +80,7 @@ public class HostDialog extends JDialog
         } else {
             active.setSelected(host.isActive());
             ip.setText(host.getIp());
-            domain.setText(host.getDomain());
+            domain.setText(host.getServerName());
             isNew = false;
         }
     }
@@ -90,7 +90,7 @@ public class HostDialog extends JDialog
         if (fieldsFilled()) {
             host.setActive(active.isSelected());
             host.setIp(ip.getText());
-            host.setDomain(domain.getText());
+            host.setServerName(domain.getText());
 
             if (isNew) {
                 hostListener.onHostAdded(host);
@@ -115,6 +115,7 @@ public class HostDialog extends JDialog
 
     protected boolean fieldsFilled()
     {
-        return !ip.getText().equals("") || !domain.getText().equals("");
+        return !ip.getText().isEmpty()
+            && !domain.getText().isEmpty();
     }
 }

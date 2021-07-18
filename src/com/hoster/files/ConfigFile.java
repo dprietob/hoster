@@ -29,6 +29,7 @@ public class ConfigFile
             File file = new File(fileName);
             return file.createNewFile();
         } catch (IOException e) {
+            // TODO: consoleListener is null on main() call
             consoleListener.onConsoleError(e.getMessage());
         }
         return false;

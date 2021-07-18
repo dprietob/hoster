@@ -32,6 +32,7 @@ public class PropertiesFile extends ConfigFile
                 reader.close();
             }
         } catch (FileNotFoundException e) {
+            // TODO: consoleListener is null on main() call
             consoleListener.onConsoleError(e.getMessage());
         }
 

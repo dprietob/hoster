@@ -1,5 +1,6 @@
 package com.hoster.gui;
 
+import com.hoster.data.HList;
 import com.hoster.data.Host;
 import com.hoster.data.Properties;
 import com.hoster.data.Server;
@@ -37,7 +38,7 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
 
 
     private Properties properties;
-    private List<Host> hostsList;
+    private HList hostsList;
     private Server server;
     private StyledDocument styledDocument;
     private Style consoleStyle;
@@ -57,7 +58,7 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
     private JLabel serverStatus;
     private JButton serverStatsBtn;
 
-    public MainFrame(Properties prop, List<Host> hl)
+    public MainFrame(Properties prop, HList hl)
     {
         properties = prop;
         hostsList = hl;
@@ -147,6 +148,7 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
     protected void updateHostsTable()
     {
         HostsTableModel tableModel = new HostsTableModel();
+        tableModel.addColumn("Status");
         tableModel.addColumn("IP");
         tableModel.addColumn("Domain");
 
@@ -156,7 +158,7 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
         hostsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         for (Host host : hostsList) {
-            tableModel.addRow(new Object[]{host.getIp(), host.getDomain()});
+            tableModel.addRow(new Object[]{host.getStatus(), host.getIp(), host.getServerName()});
         }
     }
 

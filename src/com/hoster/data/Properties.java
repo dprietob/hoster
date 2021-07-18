@@ -58,7 +58,7 @@ public class Properties
 
     public boolean getBoolean(String key)
     {
-        return (boolean)properties.get(key);
+        return (boolean) properties.get(key);
     }
 
     public Directory getMainDirectory()

@@ -1,22 +1,21 @@
 package com.hoster.files;
 
 import com.hoster.data.Directory;
+import com.hoster.data.HList;
 import com.hoster.data.Host;
+import com.hoster.data.HostList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class VHostsFile extends HostsFile
 {
-    // TODO
-    public List<Host> load(String fileName)
+    public HList load(String fileName)
     {
-        List<Host> hostsList = new ArrayList<>();
+        HList hostsList = new HostList();
         File file = new File(fileName);
         String line;
 
@@ -26,21 +25,24 @@ public class VHostsFile extends HostsFile
                 while (reader.hasNextLine()) {
                     line = reader.nextLine().trim();
                     if (isDirectory(line)) {
-                        loadMainDirectory(reader, line);
+                        loadDirectory(reader, line);
                     } else if (isVirtualHost(line)) {
-                        loadVirtualHost(reader, line);
+                        hostsList.add(loadVirtualHost(reader, line));
                     }
                 }
                 reader.close();
+            } else {
+                // TODO
             }
         } catch (FileNotFoundException e) {
+            // TODO: consoleListener is null on main() call
             consoleListener.onConsoleError(e.getMessage());
         }
 
         return hostsList;
     }
 
-    public boolean save(String fileName, Directory mainDirectory, List<Host> hostsList, String appName, String appVersion)
+    public boolean save(String fileName, Directory mainDirectory, HList hostsList, String appName, String appVersion)
     {
         if (deleteCurrentFile(fileName)) {
             if (createNewFile(fileName)) {
@@ -50,7 +52,7 @@ public class VHostsFile extends HostsFile
         return false;
     }
 
-    private boolean writeFile(String fileName, Directory mainDirectory, List<Host> hostsList, String appName, String appVersion)
+    private boolean writeFile(String fileName, Directory mainDirectory, HList hostsList, String appName, String appVersion)
     {
         try {
             if (!hostsList.isEmpty()) {
@@ -66,6 +68,7 @@ public class VHostsFile extends HostsFile
                 return true;
             }
         } catch (IOException e) {
+            // TODO: consoleListener is null on main() call
             consoleListener.onConsoleError(e.getMessage());
         }
         return false;
@@ -81,33 +84,59 @@ public class VHostsFile extends HostsFile
         return line.toLowerCase().indexOf("<virtualhost") == 0;
     }
 
-    private Directory loadMainDirectory(Scanner reader, String line)
+    private Directory loadDirectory(Scanner reader, String line)
     {
-        Directory mainDirectory = new Directory();
+        Directory directory = new Directory();
         String[] defSplit = line.split(" ");
 
         if (defSplit.length == 2) {
-            mainDirectory.setPath(defSplit[1].trim().replaceAll("\"", "").replaceAll(">", ""));
+            directory.setPath(defSplit[1].trim().replaceAll("\"", "").replaceAll(">", ""));
         }
 
         while (reader.hasNextLine()) {
             line = reader.nextLine().trim();
             if (line.equalsIgnoreCase("</directory>")) {
                 break;
+
             } else {
                 defSplit = line.split(" ");
                 if (defSplit.length == 2) {
-                    setDirectoryValue(mainDirectory, defSplit[0], defSplit[1]);
+                    setDirectoryValue(directory, defSplit[0], defSplit[1]);
                 }
             }
         }
 
-        return mainDirectory;
+        return directory;
     }
 
-    private void loadVirtualHost(Scanner reader, String line)
+    private Host loadVirtualHost(Scanner reader, String line)
     {
+        Host host = new Host();
+        String[] defSplit = line.split(":");
 
+        if (defSplit.length == 2) {
+            host.setPort(defSplit[1].trim().replaceAll(">", ""));
+        }
+
+        while (reader.hasNextLine()) {
+            line = reader.nextLine().trim();
+            if (line.equalsIgnoreCase("</virtualhost>")) {
+                break;
+
+            } else if (line.contains("<directory")) {
+                host.setDirectory(loadDirectory(reader, line));
+
+            } else {
+                defSplit = line.split(" ");
+                if (defSplit.length == 2) {
+                    setVirtualHostValue(host, defSplit[0], defSplit[1]);
+                }
+            }
+        }
+
+        host.getDirectory().setPath(host.getDocumentRoot());
+
+        return host;
     }
 
     private void setDirectoryValue(Directory directory, String key, String value)
@@ -117,6 +146,28 @@ public class VHostsFile extends HostsFile
 
         } else if (key.equalsIgnoreCase("require")) {
             directory.setRequire(value);
+        }
+    }
+
+    private void setVirtualHostValue(Host host, String key, String value)
+    {
+        if (key.equalsIgnoreCase("serveradmin")) {
+            host.setServerAdmin(value);
+
+        } else if (key.equalsIgnoreCase("servername")) {
+            host.setServerName(value);
+
+        } else if (key.equalsIgnoreCase("documentroot")) {
+            host.setDocumentRoot(value);
+
+        } else if (key.equalsIgnoreCase("serveralias")) {
+            host.setServerAlias(value);
+
+        } else if (key.equalsIgnoreCase("errorlog")) {
+            host.setErrorLog(value);
+
+        } else if (key.equalsIgnoreCase("customlog")) {
+            host.setCustomLog(value);
         }
     }
 }

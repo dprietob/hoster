@@ -115,7 +115,7 @@ public class VHostDialog extends JDialog
 
     protected boolean fieldsFilled()
     {
-        return !serverName.getText().equals("")
-            || !documentRoot.getText().equals("");
+        return !serverName.getText().isEmpty()
+            && !documentRoot.getText().isEmpty();
     }
 }
