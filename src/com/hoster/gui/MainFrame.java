@@ -1,32 +1,48 @@
 package com.hoster.gui;
 
+import com.hoster.data.HList;
 import com.hoster.data.Host;
 import com.hoster.data.Properties;
 import com.hoster.data.Server;
-import com.hoster.files.HostsFile;
-import com.hoster.files.PropertiesFile;
-import com.hoster.files.VHostsFile;
+import com.hoster.gui.listeners.ConsoleListener;
 import com.hoster.gui.listeners.HostListener;
 import com.hoster.gui.listeners.PropertiesListener;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HostFrame extends JFrame implements HostListener, PropertiesListener
+public class MainFrame extends JFrame implements HostListener, PropertiesListener, ConsoleListener
 {
     private final String APP_NAME = "Hoster";
     private final String APP_VERSION = "0.1.0";
+
+    private final Color ERROR_COLOR = new Color(220, 0, 0);
+    private final Color INFO_COLOR = UIManager.getColor("TextArea.foreground");
 
     private final int SERVER_ACTIVED = 1;
     private final int SERVER_STOPPED = 2;
     private final int SERVER_RESTARTING = 3;
 
-    private List<Host> hostsList;
+
     private Properties properties;
+    private HList hostsList;
+    private Server server;
+    private StyledDocument styledDocument;
+    private Style consoleStyle;
+
     private JPanel domainPane;
     private JButton addHostBtn;
     private JButton editHostBtn;
@@ -36,17 +52,26 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     private JButton mainConfigBtn;
     private JButton aboutBtn;
     private JTable hostsTable;
+    private JPanel consolePane;
+    private JTextPane consoleLog;
     private JButton restartServerBtn;
     private JLabel serverStatus;
     private JButton serverStatsBtn;
 
-    public HostFrame(List<Host> hl, Properties prop)
+    public MainFrame(Properties prop, HList hl)
     {
-        hostsList = hl;
         properties = prop;
+        hostsList = hl;
+
+        server = new Server();
+        server.addConsoleListener(this);
+
+        styledDocument = consoleLog.getStyledDocument();
+        consoleStyle = consoleLog.addStyle("Console Style", null);
 
         setContentPane(domainPane);
         updateHostsTable();
+        updateConsolePane();
         updateServerStatus();
 
         // Call onAddHostDialog() on CTRL+N
@@ -86,28 +111,34 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         restartServerBtn.addActionListener(e -> onRestartServer(true));
         serverStatsBtn.addActionListener(e -> onServerStats());
 
-//        addWindowFocusListener(new WindowFocusListener()
-//        {
-//            @Override
-//            public void windowGainedFocus(WindowEvent windowEvent)
-//            {
-//                updateServerStatus();
-//            }
-//
-//            @Override
-//            public void windowLostFocus(WindowEvent windowEvent)
-//            {
-//
-//            }
-//        });
+        addWindowFocusListener(new WindowFocusListener()
+        {
+            @Override
+            public void windowGainedFocus(WindowEvent windowEvent)
+            {
+                updateServerStatus(false);
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent windowEvent)
+            {
+
+            }
+        });
     }
 
     public void build()
     {
+        String[] sizes = {"16", "24", "32", "64", "128", "256", "512"};
+        List<Image> icons = new ArrayList<>();
+
+        for (String size : sizes) {
+            icons.add(new ImageIcon(getClass().getResource("icons/logo/logo_" + size + ".png")).getImage());
+        }
+
         pack();
         setTitle(APP_NAME + " " + APP_VERSION);
-        setIconImage(new ImageIcon(getClass().getResource("icons/icon.png")).getImage());
-        setResizable(false);
+        setIconImages(icons);
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -116,25 +147,48 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     protected void updateHostsTable()
     {
         HostsTableModel tableModel = new HostsTableModel();
+        tableModel.addColumn("Status");
         tableModel.addColumn("IP");
         tableModel.addColumn("Domain");
+        tableModel.addColumn("Details");
 
         hostsTable.setModel(tableModel);
         hostsTable.setDefaultRenderer(Object.class, new HostsTableRenderer(hostsList));
         hostsTable.getTableHeader().setReorderingAllowed(false);
         hostsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+        hostsTable.getColumnModel().getColumn(0).setMaxWidth(50);
+        hostsTable.getColumnModel().getColumn(1).setMaxWidth(200);
+
         for (Host host : hostsList) {
-            tableModel.addRow(new Object[]{host.getIp(), host.getDomain()});
+            tableModel.addRow(new Object[]{host.getStatus(), host.getIp(), host.getServerName()});
         }
+    }
+
+    protected void updateConsolePane()
+    {
+        consolePane.setVisible(properties.getBoolean("console_log"));
     }
 
     protected void updateServerStatus()
     {
-        if (Server.isActive()) {
+        updateServerStatus(true);
+    }
+
+    protected void updateServerStatus(boolean notifyConsole)
+    {
+        if (server.isActive()) {
             setServerStatus(SERVER_ACTIVED);
+
+            if (notifyConsole) {
+                onConsoleInfo("Server active");
+            }
         } else {
             setServerStatus(SERVER_STOPPED);
+
+            if (notifyConsole) {
+                onConsoleError("Server stopped");
+            }
         }
     }
 
@@ -161,9 +215,69 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
         serverStatus.setForeground(color);
     }
 
+    protected void saveHostFile()
+    {
+        boolean fileSaved = properties.getHostsFile().save(
+            properties.getString("hosts_file"),
+            hostsList,
+            APP_NAME,
+            APP_VERSION
+        );
+
+        if (!fileSaved) {
+            JOptionPane.showMessageDialog(
+                this,
+                "There was an error trying to update host file. Make sure the application has the necessary privileges.",
+                "Host file update error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    protected void saveVHostFile()
+    {
+        boolean fileSaved = properties.getVHostsFile().save(
+            properties.getString("vhosts_file"),
+            properties.getMainDirectory(),
+            hostsList,
+            APP_NAME,
+            APP_VERSION
+        );
+
+        if (!fileSaved) {
+            JOptionPane.showMessageDialog(
+                this,
+                "There was an error trying to update virtual-host file. Make sure the application has the necessary privileges.",
+                "Virtual-Host file update error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    protected void savePropertiesFile()
+    {
+        boolean fileSaved = properties.getPropertiesFile().save(properties);
+
+        if (!fileSaved) {
+            JOptionPane.showMessageDialog(
+                this,
+                "An error occurred while trying to save the properties file. Please make sure the application has the necessary privileges.",
+                "Properties file error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    protected String getCurrentTime()
+    {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        return dtf.format(now);
+    }
+
     protected void onAddHostDialog()
     {
-        AddHostDialog dialog = new AddHostDialog(this);
+        HostDialog dialog = new HostDialog(this, null, 0);
         dialog.addHostListener(this);
         dialog.build();
     }
@@ -172,7 +286,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     {
         int row = hostsTable.getSelectedRow();
         if (row > -1) {
-            EditHostDialog dialog = new EditHostDialog(this, hostsList.get(row), row);
+            HostDialog dialog = new HostDialog(this, hostsList.get(row), row);
             dialog.addHostListener(this);
             dialog.build();
         } else {
@@ -209,7 +323,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
     protected void onMainConfigDialog()
     {
-        PropertiesDialog dialog = new PropertiesDialog(this, properties);
+        PropertiesDialog dialog = new PropertiesDialog(this, properties, server.getOS());
         dialog.addConfigListener(this);
         dialog.build();
     }
@@ -217,6 +331,7 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     protected void onAboutDialog()
     {
         AboutDialog dialog = new AboutDialog(this);
+        dialog.addConsoleListener(this);
         dialog.build();
     }
 
@@ -228,8 +343,9 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     protected void onRestartServer(boolean force)
     {
         if (force || properties.getBoolean("restart_server")) {
+            onConsoleInfo("Restarting server...");
             setServerStatus(SERVER_RESTARTING);
-            Server.restart(properties.getString("apache_path"));
+            server.restart(properties.getString("apache_path"));
             updateServerStatus();
         }
     }
@@ -243,18 +359,9 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     public void onHostAdded(Host host)
     {
         hostsList.add(host);
-
-        if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
-            updateHostsTable();
-            onRestartServer();
-        } else {
-            JOptionPane.showMessageDialog(
-                this,
-                "There was an error trying to update host file. Make sure the application has the necessary privileges.",
-                "Host file update error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
+        saveHostFile();
+        updateHostsTable();
+        onRestartServer();
     }
 
     @Override
@@ -262,18 +369,10 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     {
         hostsList.remove(row);
         hostsList.add(row, host);
-
-        if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
-            updateHostsTable();
-            onRestartServer();
-        } else {
-            JOptionPane.showMessageDialog(
-                this,
-                "There was an error trying to update host file. Make sure the application has the necessary privileges.",
-                "Host file update error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
+        saveHostFile();
+        saveVHostFile();
+        updateHostsTable();
+        onRestartServer();
     }
 
     @Override
@@ -290,26 +389,10 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
 
             if (option == JOptionPane.YES_OPTION) {
                 hostsList.remove(row);
-                if (HostsFile.save(properties.getString("hosts_file"), hostsList, APP_NAME, APP_VERSION)) {
-                    if (VHostsFile.save(properties.getString("vhosts_file"), hostsList, APP_NAME, APP_VERSION)) {
-                        updateHostsTable();
-                        onRestartServer();
-                    } else {
-                        JOptionPane.showMessageDialog(
-                            this,
-                            "There was an error trying to update virtual-host file. Make sure the application has the necessary privileges.",
-                            "Virtual-Host file update error",
-                            JOptionPane.ERROR_MESSAGE
-                        );
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "There was an error trying to update host file. Make sure the application has the necessary privileges.",
-                        "Host file update error",
-                        JOptionPane.ERROR_MESSAGE
-                    );
-                }
+                saveHostFile();
+                saveVHostFile();
+                updateHostsTable();
+                onRestartServer();
             }
         } else {
             JOptionPane.showMessageDialog(
@@ -322,35 +405,42 @@ public class HostFrame extends JFrame implements HostListener, PropertiesListene
     }
 
     @Override
-    public void onVirtualHostUpdated(Host host, int row)
+    public void onPropertiesUpdate(Map<String, Object> propertiesMap)
     {
-        hostsList.remove(row);
-        hostsList.add(row, host);
+        properties.setPropertiesMap(propertiesMap);
+        savePropertiesFile();
+        updateConsolePane();
+        onRestartServer();
+    }
 
-        if (VHostsFile.save(properties.getString("vhosts_file"), hostsList, properties.getMainDirectory(), APP_NAME, APP_VERSION)) {
-            onRestartServer();
-        } else {
+    @Override
+    public void onConsoleInfo(String info)
+    {
+        StyleConstants.setForeground(consoleStyle, INFO_COLOR);
+
+        try {
+            styledDocument.insertString(styledDocument.getLength(), getCurrentTime() + " - " + info + "\n", consoleStyle);
+        } catch (BadLocationException e) {
             JOptionPane.showMessageDialog(
                 this,
-                "There was an error trying to update virtual-host file. Make sure the application has the necessary privileges.",
-                "Host file update error",
-                JOptionPane.ERROR_MESSAGE
-            );
+                e.getMessage(),
+                "Console error",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
     @Override
-    public void onPropertiesUpdate(Map<String, Object> propertiesMap)
+    public void onConsoleError(String error)
     {
-        properties.setPropertiesMap(propertiesMap);
+        StyleConstants.setForeground(consoleStyle, ERROR_COLOR);
 
-        if (PropertiesFile.save(properties)) {
-            onRestartServer();
-        } else {
+        try {
+            styledDocument.insertString(styledDocument.getLength(), getCurrentTime() + " - " + error + "\n", consoleStyle);
+        } catch (BadLocationException e) {
             JOptionPane.showMessageDialog(
                 this,
-                "An error occurred while trying to save the properties file. Please make sure the application has the necessary privileges.",
-                "Properties file error",
+                e.getMessage(),
+                "Console error",
                 JOptionPane.ERROR_MESSAGE);
         }
     }

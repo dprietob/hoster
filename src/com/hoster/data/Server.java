@@ -1,5 +1,7 @@
 package com.hoster.data;
 
+import com.hoster.gui.listeners.ConsoleListener;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,7 +15,14 @@ public class Server
     private static final String WINDOWS_RESTART_COMMAND = "\\bin\\httpd -k restart"; // runservice
     private static final String WINDOWS_INSTALL_COMMAND = "\\bin\\httpd -k install";
 
-    public static void restart(String apachePath)
+    private ConsoleListener consoleListener;
+
+    public void addConsoleListener(ConsoleListener listener)
+    {
+        consoleListener = listener;
+    }
+
+    public void restart(String apachePath)
     {
         switch (getOS()) {
             case LINUX:
@@ -30,24 +39,22 @@ public class Server
         }
     }
 
-    private static void restartWindowsServer(String apachePath)
+    private void restartWindowsServer(String apachePath)
     {
         if (apachePath != null) {
             String cmdOutput = getCommandOutput(apachePath + WINDOWS_RESTART_COMMAND);
-            System.out.println(cmdOutput);
             if (cmdOutput != null && cmdOutput.contains("No installed service")) {
-                System.out.println("Servicio no instalado");
                 exeCommand(WINDOWS_INSTALL_COMMAND);
                 exeCommand(WINDOWS_RESTART_COMMAND);
             } else {
-                // TODO
+                consoleListener.onConsoleError("Unable to restart server: unknown restart response.");
             }
         } else {
-            // TODO
+            consoleListener.onConsoleError("Unable to restart server: Apache path is empty.");
         }
     }
 
-    public static boolean isActive()
+    public boolean isActive()
     {
         switch (getOS()) {
             case LINUX:
@@ -60,7 +67,7 @@ public class Server
         return false;
     }
 
-    private static boolean isLinuxServerActive()
+    private boolean isLinuxServerActive()
     {
         String cmdOutput = getCommandOutput(LINUX_STATUS_COMMAND);
 
@@ -68,31 +75,30 @@ public class Server
             && cmdOutput.contains("Active: active (running)");
     }
 
-    private static boolean isWindowsServerActive()
+    private boolean isWindowsServerActive()
     {
         String cmdOutput = getCommandOutput(WINDOWS_STATUS_COMMAND);
         return cmdOutput != null && cmdOutput.contains("httpd.exe");
     }
 
-    private static boolean isMacServerActive()
+    private boolean isMacServerActive()
     {
         // TODO
         return false;
     }
 
-    private static void exeCommand(String cmd)
+    private void exeCommand(String cmd)
     {
         try {
-            System.out.println(cmd);
             Runtime run = Runtime.getRuntime();
             Process pr = run.exec(cmd);
             pr.waitFor();
         } catch (Exception e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
     }
 
-    private static String getCommandOutput(String cmd)
+    private String getCommandOutput(String cmd)
     {
         try {
             Runtime run = Runtime.getRuntime();
@@ -116,12 +122,12 @@ public class Server
 
             return scOutput.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
         return null;
     }
 
-    public static OperatingSystem getOS()
+    public OperatingSystem getOS()
     {
         String osName = System.getProperty("os.name").toLowerCase();
 

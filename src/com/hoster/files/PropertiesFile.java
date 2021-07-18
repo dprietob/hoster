@@ -15,29 +15,31 @@ public class PropertiesFile extends ConfigFile
     private static final String CONFIG_FILE = "config.properties";
 
 
-    public static Map<String, Object> load()
+    public Map<String, Object> load()
     {
         Map<String, Object> initialConfig = getEmptyProperties();
+        File file = new File(CONFIG_FILE);
+
         try {
-            File file = new File(CONFIG_FILE);
             if (file.exists()) {
-                Scanner myReader = new Scanner(file);
-                while (myReader.hasNextLine()) {
-                    String[] line = myReader.nextLine().split("=");
+                Scanner reader = new Scanner(file);
+                while (reader.hasNextLine()) {
+                    String[] line = reader.nextLine().split("=");
                     if (line.length == 2) {
                         initialConfig.put(line[0].trim(), line[1].trim());
                     }
                 }
-                myReader.close();
+                reader.close();
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            // TODO: consoleListener is null on main() call
+            consoleListener.onConsoleError(e.getMessage());
         }
 
         return initialConfig;
     }
 
-    public static boolean save(Properties properties)
+    public boolean save(Properties properties)
     {
         if (deleteCurrentFile(CONFIG_FILE)) {
             if (createNewFile(CONFIG_FILE)) {
@@ -47,7 +49,7 @@ public class PropertiesFile extends ConfigFile
         return false;
     }
 
-    private static boolean writeFile(Properties properties)
+    private boolean writeFile(Properties properties)
     {
         try {
             FileWriter fileWriter = new FileWriter(CONFIG_FILE);
@@ -58,17 +60,18 @@ public class PropertiesFile extends ConfigFile
             fileWriter.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            consoleListener.onConsoleError(e.getMessage());
         }
         return false;
     }
 
-    private static Map<String, Object> getEmptyProperties()
+    private Map<String, Object> getEmptyProperties()
     {
         Map<String, Object> properties = new HashMap<>();
         properties.put("theme", "light");
         properties.put("hosts_file", "");
         properties.put("vhosts_file", "");
+        properties.put("console_log", "0");
         properties.put("directory_path", "");
         properties.put("directory_require", "");
         properties.put("directory_allow_override", "");

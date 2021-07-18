@@ -2,7 +2,6 @@ package com.hoster.gui;
 
 import com.hoster.data.OperatingSystem;
 import com.hoster.data.Properties;
-import com.hoster.data.Server;
 import com.hoster.gui.listeners.PropertiesListener;
 
 import javax.swing.*;
@@ -17,11 +16,13 @@ public class PropertiesDialog extends JDialog
 {
     private Properties properties;
     private PropertiesListener propertiesListener;
+
     private JFrame parent;
     private JPanel configPane;
     private JComboBox theme;
     private JTextField hostsFile;
     private JButton findHostsFile;
+    private JCheckBox consoleLog;
     private JTextField vhostsFile;
     private JButton findVhostFile;
     private JTextField directoryPath;
@@ -35,7 +36,7 @@ public class PropertiesDialog extends JDialog
     private JButton accept;
     private JButton cancel;
 
-    public PropertiesDialog(JFrame p, Properties prop)
+    public PropertiesDialog(JFrame p, Properties prop, OperatingSystem os)
     {
         parent = p;
         properties = prop;
@@ -65,7 +66,7 @@ public class PropertiesDialog extends JDialog
         // Call onCancel() on ESCAPE
         configPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        if (Server.getOS() != OperatingSystem.WINDOWS) {
+        if (os != OperatingSystem.WINDOWS) {
             apachePane.setVisible(false);
         }
     }
@@ -91,6 +92,7 @@ public class PropertiesDialog extends JDialog
         theme.setSelectedIndex(properties.getString("theme").equals("light") ? 0 : 1);
         hostsFile.setText(properties.getString("hosts_file"));
         vhostsFile.setText(properties.getString("vhosts_file"));
+        consoleLog.setSelected(properties.getBoolean("console_log"));
         directoryPath.setText(properties.getMainDirectory().getPath());
         require.setText(properties.getMainDirectory().getRequire());
         allowOverride.setText(properties.getMainDirectory().getAllowOverride());
@@ -115,6 +117,7 @@ public class PropertiesDialog extends JDialog
         fileChooser.setFileSelectionMode(mode);
         fileChooser.setCurrentDirectory(new File(field.getText()));
         int selection = fileChooser.showOpenDialog(field);
+
         if (selection == JFileChooser.APPROVE_OPTION) {
             field.setText(fileChooser.getSelectedFile().getAbsolutePath());
         }
@@ -126,6 +129,7 @@ public class PropertiesDialog extends JDialog
         propertiesMap.put("theme", theme.getSelectedItem().toString().toLowerCase());
         propertiesMap.put("hosts_file", hostsFile.getText());
         propertiesMap.put("vhosts_file", vhostsFile.getText());
+        propertiesMap.put("console_log", consoleLog.isSelected() ? "1" : "0");
         propertiesMap.put("directory_path", directoryPath.getText());
         propertiesMap.put("directory_require", require.getText());
         propertiesMap.put("directory_allow_override", allowOverride.getText());

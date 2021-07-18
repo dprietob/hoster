@@ -10,9 +10,10 @@ import java.awt.event.WindowEvent;
 
 public class VHostDialog extends JDialog
 {
-    private HostListener hostListener;
     private Host host;
     private int hostPosition;
+    private HostListener hostListener;
+
     private JFrame parent;
     private JPanel vhostPane;
     private JTextField serverAdmin;
@@ -29,12 +30,14 @@ public class VHostDialog extends JDialog
 
     public VHostDialog(JFrame p, Host h, int pos)
     {
-        setContentPane(vhostPane);
-        getRootPane().setDefaultButton(accept);
-
         parent = p;
         host = h;
         hostPosition = pos;
+
+        setContentPane(vhostPane);
+        getRootPane().setDefaultButton(accept);
+        setVHostConfig();
+
         accept.addActionListener(e -> onAccept());
         cancel.addActionListener(e -> onCancel());
 
@@ -68,6 +71,19 @@ public class VHostDialog extends JDialog
         setVisible(true);
     }
 
+    protected void setVHostConfig()
+    {
+        serverAdmin.setText(host.getServerAdmin());
+        serverName.setText(host.getServerName());
+        documentRoot.setText(host.getDocumentRoot());
+        serverAlias.setText(host.getServerAlias());
+        port.setText(host.getPort());
+        errorLog.setText(host.getErrorLog());
+        customLog.setText(host.getCustomLog());
+        require.setText(host.getDirectory().getRequire());
+        allowOverride.setText(host.getDirectory().getAllowOverride());
+    }
+
     protected void onAccept()
     {
         if (fieldsFilled()) {
@@ -81,7 +97,7 @@ public class VHostDialog extends JDialog
             host.getDirectory().setRequire(require.getText());
             host.getDirectory().setAllowOverride(allowOverride.getText());
 
-            hostListener.onVirtualHostUpdated(host, hostPosition);
+            hostListener.onHostEdited(host, hostPosition);
             dispose();
         } else {
             JOptionPane.showMessageDialog(
@@ -99,7 +115,7 @@ public class VHostDialog extends JDialog
 
     protected boolean fieldsFilled()
     {
-        return !serverName.getText().equals("")
-            || !documentRoot.getText().equals("");
+        return !serverName.getText().isEmpty()
+            && !documentRoot.getText().isEmpty();
     }
 }
