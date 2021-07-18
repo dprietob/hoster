@@ -183,7 +183,7 @@ public class Host
 
             out.append("<VirtualHost *:").append(getPort()).append(">").append("\n");
             insertTagsToXML(out, data);
-            out.append(directory.parseToXML(true));
+            out.append(directory.parseToXML(true)).append("\n");
             out.append("</VirtualHost>");
 
             return out.toString();

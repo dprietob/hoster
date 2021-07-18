@@ -55,7 +55,7 @@ public class PropertiesFile extends ConfigFile
     {
         try {
             FileWriter fileWriter = new FileWriter(CONFIG_FILE);
-            fileWriter.write("# Do not modify manually! \n");
+            fileWriter.write("# Do not modify manually! \n\n");
             for (Map.Entry<String, Object> entry : properties.getPropertiesMap().entrySet()) {
                 fileWriter.write(entry.getKey() + "=" + entry.getValue().toString() + "\n");
             }

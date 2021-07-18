@@ -409,6 +409,7 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
     {
         properties.setPropertiesMap(propertiesMap);
         savePropertiesFile();
+        saveVHostFile();
         updateConsolePane();
         onRestartServer();
     }
