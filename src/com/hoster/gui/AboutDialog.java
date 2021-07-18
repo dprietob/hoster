@@ -19,6 +19,7 @@ public class AboutDialog extends JDialog implements MouseListener
 
     private JFrame parent;
     private JPanel aboutPane;
+    private JLabel appNameVersion;
     private JLabel developerLink;
     private JLabel flatlafLink;
     private JLabel farmFreshLink;
@@ -26,7 +27,7 @@ public class AboutDialog extends JDialog implements MouseListener
     private JButton close;
 
 
-    public AboutDialog(JFrame p)
+    public AboutDialog(JFrame p, String appName, String appVersion)
     {
         setContentPane(aboutPane);
         getRootPane().setDefaultButton(close);
@@ -50,6 +51,8 @@ public class AboutDialog extends JDialog implements MouseListener
 
         // Call onCancel() on ESCAPE
         aboutPane.registerKeyboardAction(e -> onClose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        appNameVersion.setText(appName + " " + appVersion);
     }
 
     public void addConsoleListener(ConsoleListener listener)

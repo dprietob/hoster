@@ -34,4 +34,13 @@ public class ConfigFile
         }
         return false;
     }
+
+    public String cleanString(String str)
+    {
+        return str.trim()
+            .replaceAll("\"", "")
+            .replaceAll("'", "")
+            .replaceAll(">", "")
+            .replaceAll("#", "");
+    }
 }

@@ -220,13 +220,13 @@
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
-          <component id="f494e" class="javax.swing.JLabel">
+          <component id="f494e" class="javax.swing.JLabel" binding="appNameVersion">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font size="28" style="1"/>
-              <text value="Hoster 0.1.0"/>
+              <text value="APP_NAME"/>
             </properties>
           </component>
         </children>

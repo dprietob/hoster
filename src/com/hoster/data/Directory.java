@@ -70,7 +70,7 @@ public class Directory
                 out.append("\t");
             }
 
-            out.append("</Directory>\n");
+            out.append("</Directory>");
 
             return out.toString();
         }

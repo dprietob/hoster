@@ -23,10 +23,12 @@ public class PropertiesFile extends ConfigFile
         try {
             if (file.exists()) {
                 Scanner reader = new Scanner(file);
+                String[] defSplit;
+
                 while (reader.hasNextLine()) {
-                    String[] line = reader.nextLine().split("=");
-                    if (line.length == 2) {
-                        initialConfig.put(line[0].trim(), line[1].trim());
+                    defSplit = reader.nextLine().split("=");
+                    if (defSplit.length == 2) {
+                        initialConfig.put(cleanString(defSplit[0]), cleanString(defSplit[1]));
                     }
                 }
                 reader.close();
@@ -53,7 +55,7 @@ public class PropertiesFile extends ConfigFile
     {
         try {
             FileWriter fileWriter = new FileWriter(CONFIG_FILE);
-            fileWriter.write("# Do not modify manually! \n");
+            fileWriter.write("# Do not modify manually! \n\n");
             for (Map.Entry<String, Object> entry : properties.getPropertiesMap().entrySet()) {
                 fileWriter.write(entry.getKey() + "=" + entry.getValue().toString() + "\n");
             }

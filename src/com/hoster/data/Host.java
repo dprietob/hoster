@@ -183,7 +183,11 @@ public class Host
 
             out.append("<VirtualHost *:").append(getPort()).append(">").append("\n");
             insertTagsToXML(out, data);
-            out.append(directory.parseToXML(true));
+
+            if (directory.isValid()) {
+                out.append(directory.parseToXML(true)).append("\n");
+            }
+
             out.append("</VirtualHost>");
 
             return out.toString();
@@ -195,8 +199,19 @@ public class Host
     {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                out.append("\t").append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+                if (shouldTagValueWrappedInQuotes(entry.getKey())) {
+                    out.append("\t").append(entry.getKey()).append(" \"").append(entry.getValue()).append("\"\n");
+                } else {
+                    out.append("\t").append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+                }
             }
         }
+    }
+
+    private boolean shouldTagValueWrappedInQuotes(String key)
+    {
+        return key.equalsIgnoreCase("DocumentRoot")
+            || key.equalsIgnoreCase("ErrorLog")
+            || key.equalsIgnoreCase("CustomLog");
     }
 }
