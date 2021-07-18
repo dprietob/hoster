@@ -73,6 +73,7 @@ public class PropertiesFile extends ConfigFile
         properties.put("theme", "light");
         properties.put("hosts_file", "");
         properties.put("vhosts_file", "");
+        properties.put("php_file", "");
         properties.put("console_log", "0");
         properties.put("directory_path", "");
         properties.put("directory_require", "");

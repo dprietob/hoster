@@ -25,8 +25,8 @@ as a Service in the system. This can be avoided if `httpd.exe` is added to
 For Linux systems, Hoster uses `service apache2 status` and `service apache2 restart`
 commands to manage Apache Server, so they need to be accessible through terminal.
 
-To compile, it's necessary add `lib/flatlaf-1.3.jar` as library in your IDE or
-code editor and configure `Java 1.8` as minimum JDK.
+To compile, it's necessary add `lib/flatlaf-1.3.jar` and `lib/ini4j-0.5.5.jar` as 
+library in your IDE or code editor and configure `Java 1.8` as minimum JDK.
 
 ## Caution
 
@@ -52,8 +52,9 @@ $ cd hoster
 
 ## Dependencies
 
-Hoster use [FlatLaf](https://github.com/JFormDesigner/FlatLaf) to GUI customization, 
-also some [FarmFresh icons](https://www.fatcow.com/free-icons). 
+Hoster uses [FlatLaf](https://github.com/JFormDesigner/FlatLaf) to GUI customization,
+[ini4j](https://sourceforge.net/projects/ini4j/) to .ini file manipulation
+and also some [FarmFresh icons](https://www.fatcow.com/free-icons). 
 
 ## License
 

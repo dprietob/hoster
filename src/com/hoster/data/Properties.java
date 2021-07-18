@@ -77,6 +77,7 @@ public class Properties
         properties.put("theme", propertiesMap.get("theme"));
         properties.put("hosts_file", propertiesMap.get("hosts_file"));
         properties.put("vhosts_file", propertiesMap.get("vhosts_file"));
+        properties.put("php_file", propertiesMap.get("php_file"));
         properties.put("console_log", propertiesMap.get("console_log").equals("1"));
         properties.put("apache_path", propertiesMap.get("apache_path"));
         properties.put("restart_server", propertiesMap.get("restart_server").equals("1"));

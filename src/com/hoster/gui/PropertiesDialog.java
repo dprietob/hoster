@@ -25,6 +25,8 @@ public class PropertiesDialog extends JDialog
     private JCheckBox consoleLog;
     private JTextField vhostsFile;
     private JButton findVhostFile;
+    private JTextField phpFile;
+    private JButton findPhpFile;
     private JTextField directoryPath;
     private JButton findDirectoryPath;
     private JTextField require;
@@ -48,6 +50,7 @@ public class PropertiesDialog extends JDialog
         theme.addActionListener(e -> onThemeSelection());
         findHostsFile.addActionListener(e -> onFind(hostsFile, JFileChooser.FILES_ONLY));
         findVhostFile.addActionListener(e -> onFind(vhostsFile, JFileChooser.FILES_ONLY));
+        findPhpFile.addActionListener(e -> onFind(phpFile, JFileChooser.FILES_ONLY));
         findDirectoryPath.addActionListener(e -> onFind(directoryPath, JFileChooser.DIRECTORIES_ONLY));
         findApacheBtn.addActionListener(e -> onFind(apachePath, JFileChooser.DIRECTORIES_ONLY));
         accept.addActionListener(e -> onAccept());
@@ -92,6 +95,7 @@ public class PropertiesDialog extends JDialog
         theme.setSelectedIndex(properties.getString("theme").equals("light") ? 0 : 1);
         hostsFile.setText(properties.getString("hosts_file"));
         vhostsFile.setText(properties.getString("vhosts_file"));
+        phpFile.setText(properties.getString("php_file"));
         consoleLog.setSelected(properties.getBoolean("console_log"));
         directoryPath.setText(properties.getMainDirectory().getPath());
         require.setText(properties.getMainDirectory().getRequire());
@@ -129,6 +133,7 @@ public class PropertiesDialog extends JDialog
         propertiesMap.put("theme", theme.getSelectedItem().toString().toLowerCase());
         propertiesMap.put("hosts_file", hostsFile.getText());
         propertiesMap.put("vhosts_file", vhostsFile.getText());
+        propertiesMap.put("php_file", phpFile.getText());
         propertiesMap.put("console_log", consoleLog.isSelected() ? "1" : "0");
         propertiesMap.put("directory_path", directoryPath.getText());
         propertiesMap.put("directory_require", require.getText());

@@ -10,7 +10,8 @@ import java.net.URL;
 public class AboutDialog extends JDialog implements MouseListener
 {
     private final String DEVELOPER_URL = "https://github.com/dprietob";
-    private final String FLATLAF_URL = "https://github.com/DevCharly";
+    private final String FLATLAF_URL = "https://github.com/JFormDesigner/FlatLaf";
+    private final String INI4J_URL = "https://sourceforge.net/projects/ini4j/";
     private final String FARMFRESH_URL = "https://www.fatcow.com/free-icons";
     private final String REPORT_URL = "https://github.com/dprietob/hoster/issues";
     private final Color LINK_COLOR = new Color(42, 155, 187);
@@ -22,6 +23,7 @@ public class AboutDialog extends JDialog implements MouseListener
     private JLabel appNameVersion;
     private JLabel developerLink;
     private JLabel flatlafLink;
+    private JLabel ini4jLink;
     private JLabel farmFreshLink;
     private JButton reportBug;
     private JButton close;
@@ -35,6 +37,7 @@ public class AboutDialog extends JDialog implements MouseListener
         parent = p;
         developerLink.addMouseListener(this);
         flatlafLink.addMouseListener(this);
+        ini4jLink.addMouseListener(this);
         farmFreshLink.addMouseListener(this);
         reportBug.addActionListener(e -> onReportBug());
         close.addActionListener(e -> onClose());
@@ -105,6 +108,9 @@ public class AboutDialog extends JDialog implements MouseListener
 
         } else if (label.equals(flatlafLink)) {
             openWebpage(FLATLAF_URL);
+
+        } else if (label.equals(ini4jLink)) {
+            openWebpage(INI4J_URL);
 
         } else if (label.equals(farmFreshLink)) {
             openWebpage(FARMFRESH_URL);

@@ -27,7 +27,7 @@ import java.util.Map;
 public class MainFrame extends JFrame implements HostListener, PropertiesListener, ConsoleListener
 {
     private final String APP_NAME = "Hoster";
-    private final String APP_VERSION = "0.2.1";
+    private final String APP_VERSION = "0.3.0";
 
     private final Color ERROR_COLOR = new Color(220, 0, 0);
     private final Color INFO_COLOR = UIManager.getColor("TextArea.foreground");
@@ -318,7 +318,9 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
 
     protected void onPhpConfigDialog()
     {
-        // TODO
+        PhpDialog dialog = new PhpDialog(this, properties);
+        dialog.addConfigListener(this);
+        dialog.build();
     }
 
     protected void onMainConfigDialog()
@@ -402,6 +404,17 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
                 JOptionPane.ERROR_MESSAGE
             );
         }
+    }
+
+    @Override
+    public void onPhpUpdate(Map<String, Object> phpMap)
+    {
+        // TODO
+//        properties.setPropertiesMap(propertiesMap);
+//        savePropertiesFile();
+//        saveVHostFile();
+//        updateConsolePane();
+//        onRestartServer();
     }
 
     @Override
