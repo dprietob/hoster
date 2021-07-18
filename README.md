@@ -3,7 +3,7 @@
 A simple desktop application for configuring domains, virtual hosts and PHP settings, also manage 
 some Apache Server basics statistics.
 
-![](https://i.ibb.co/NtmmLgg/hoster.png)
+![](https://i.ibb.co/y4Z6krF/hoster.png)
 
 ## Features
 
@@ -27,12 +27,6 @@ commands to manage Apache Server, so they need to be accessible through terminal
 
 To compile, it's necessary add `lib/flatlaf-1.3.jar` as library in your IDE or
 code editor and configure `Java 1.8` as minimum JDK.
-
-## Usage
-
-A GIF is worth a thousand words:
-
-![](https://i.ibb.co/dcKHSFz/usage.gif)
 
 ## Caution
 
