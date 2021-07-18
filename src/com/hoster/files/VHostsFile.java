@@ -130,7 +130,7 @@ public class VHostsFile extends HostsFile
             if (line.equalsIgnoreCase("</virtualhost>")) {
                 break;
 
-            } else if (line.contains("<directory")) {
+            } else if (line.toLowerCase().contains("<directory")) {
                 host.setDirectory(loadDirectory(reader, line));
 
             } else {
