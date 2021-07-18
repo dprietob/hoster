@@ -27,7 +27,7 @@ import java.util.Map;
 public class MainFrame extends JFrame implements HostListener, PropertiesListener, ConsoleListener
 {
     private final String APP_NAME = "Hoster";
-    private final String APP_VERSION = "0.2.0";
+    private final String APP_VERSION = "0.2.1";
 
     private final Color ERROR_COLOR = new Color(220, 0, 0);
     private final Color INFO_COLOR = UIManager.getColor("TextArea.foreground");
