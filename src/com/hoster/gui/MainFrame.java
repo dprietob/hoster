@@ -139,7 +139,6 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
         pack();
         setTitle(APP_NAME + " " + APP_VERSION);
         setIconImages(icons);
-        setResizable(false);
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -151,11 +150,15 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
         tableModel.addColumn("Status");
         tableModel.addColumn("IP");
         tableModel.addColumn("Domain");
+        tableModel.addColumn("Details");
 
         hostsTable.setModel(tableModel);
         hostsTable.setDefaultRenderer(Object.class, new HostsTableRenderer(hostsList));
         hostsTable.getTableHeader().setReorderingAllowed(false);
         hostsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        hostsTable.getColumnModel().getColumn(0).setMaxWidth(50);
+        hostsTable.getColumnModel().getColumn(1).setMaxWidth(200);
 
         for (Host host : hostsList) {
             tableModel.addRow(new Object[]{host.getStatus(), host.getIp(), host.getServerName()});

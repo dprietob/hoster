@@ -39,31 +39,31 @@ public class HostsTableRenderer extends DefaultTableCellRenderer
 
         Color background;
         Color foreground;
-        String tooltip;
+        String details;
         ImageIcon icon;
 
         if (h.getStatus() == HostStatus.NO_DOMAIN) {
             background = bgNoDomain;
             foreground = fgNoDomain;
-            tooltip = "No IP or domain defined";
+            details = "No IP or domain defined";
             icon = new ImageIcon(getClass().getResource("icons/no_domain.png"));
 
         } else if (h.getStatus() == HostStatus.NO_VHOST) {
             background = bgNoVhost;
             foreground = fgNoVhost;
-            tooltip = "No virtual host defined";
+            details = "No virtual host defined";
             icon = new ImageIcon(getClass().getResource("icons/no_vhost.png"));
 
         } else if (!h.isActive()) {
             background = bgInactive;
             foreground = fgInactive;
-            tooltip = "Domain inactive";
+            details = "Domain inactive";
             icon = new ImageIcon(getClass().getResource("icons/inactive.png"));
 
         } else {
             background = bgStandard;
             foreground = fgStandard;
-            tooltip = "Correct configuration";
+            details = "";
             icon = new ImageIcon(getClass().getResource("icons/all_ok.png"));
         }
 
@@ -79,13 +79,17 @@ public class HostsTableRenderer extends DefaultTableCellRenderer
         c.setBackground(background);
         c.setForeground(foreground);
 
-        if (value instanceof HostStatus) {
+        // Status column
+        if (column == 0) {
             ((JLabel) c).setText("");
             ((JLabel) c).setIcon(icon);
-            ((JLabel) c).setToolTipText(tooltip);
+
+        // Details column
+        } else if (column == 3) {
+            ((JLabel) c).setText(details);
+
         } else {
             ((JLabel) c).setIcon(null);
-            ((JLabel) c).setToolTipText(null);
         }
 
         return c;
