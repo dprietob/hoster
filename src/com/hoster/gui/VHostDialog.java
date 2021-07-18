@@ -97,7 +97,7 @@ public class VHostDialog extends JDialog
             host.getDirectory().setRequire(require.getText());
             host.getDirectory().setAllowOverride(allowOverride.getText());
 
-            hostListener.onVirtualHostUpdated(host, hostPosition);
+            hostListener.onHostEdited(host, hostPosition);
             dispose();
         } else {
             JOptionPane.showMessageDialog(

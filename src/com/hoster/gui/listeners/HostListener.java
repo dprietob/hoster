@@ -9,6 +9,4 @@ public interface HostListener
     void onHostEdited(Host host, int row);
 
     void onHostDeleted();
-
-    void onVirtualHostUpdated(Host host, int row);
 }

@@ -367,6 +367,7 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
         hostsList.remove(row);
         hostsList.add(row, host);
         saveHostFile();
+        saveVHostFile();
         updateHostsTable();
         onRestartServer();
     }
@@ -398,15 +399,6 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
                 JOptionPane.ERROR_MESSAGE
             );
         }
-    }
-
-    @Override
-    public void onVirtualHostUpdated(Host host, int row)
-    {
-        hostsList.remove(row);
-        hostsList.add(row, host);
-        saveVHostFile();
-        onRestartServer();
     }
 
     @Override
