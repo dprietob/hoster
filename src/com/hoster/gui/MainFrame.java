@@ -19,6 +19,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -127,9 +128,16 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
 
     public void build()
     {
+        String[] sizes = {"16", "24", "32", "64", "128", "256", "512"};
+        List<Image> icons = new ArrayList<>();
+
+        for (String size : sizes) {
+            icons.add(new ImageIcon(getClass().getResource("icons/logo/logo_" + size + ".png")).getImage());
+        }
+
         pack();
         setTitle(APP_NAME + " " + APP_VERSION);
-        setIconImage(new ImageIcon(getClass().getResource("icons/icon.png")).getImage());
+        setIconImages(icons);
         setResizable(false);
         setVisible(true);
         setLocationRelativeTo(null);
