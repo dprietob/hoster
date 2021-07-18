@@ -27,7 +27,7 @@ import java.util.Map;
 public class MainFrame extends JFrame implements HostListener, PropertiesListener, ConsoleListener
 {
     private final String APP_NAME = "Hoster";
-    private final String APP_VERSION = "0.1.0";
+    private final String APP_VERSION = "0.2.0";
 
     private final Color ERROR_COLOR = new Color(220, 0, 0);
     private final Color INFO_COLOR = UIManager.getColor("TextArea.foreground");
@@ -330,7 +330,7 @@ public class MainFrame extends JFrame implements HostListener, PropertiesListene
 
     protected void onAboutDialog()
     {
-        AboutDialog dialog = new AboutDialog(this);
+        AboutDialog dialog = new AboutDialog(this, APP_NAME, APP_VERSION);
         dialog.addConsoleListener(this);
         dialog.build();
     }

@@ -90,7 +90,7 @@ public class VHostsFile extends HostsFile
         String[] defSplit = line.split(" ");
 
         if (defSplit.length == 2) {
-            directory.setPath(defSplit[1].trim().replaceAll("\"", "").replaceAll(">", ""));
+            directory.setPath(cleanString(defSplit[1]));
         }
 
         while (reader.hasNextLine()) {
@@ -101,7 +101,7 @@ public class VHostsFile extends HostsFile
             } else {
                 defSplit = line.split(" ");
                 if (defSplit.length == 2) {
-                    setDirectoryValue(directory, defSplit[0], defSplit[1]);
+                    setDirectoryValue(directory, cleanString(defSplit[0]), cleanString(defSplit[1]));
                 }
             }
         }
@@ -115,7 +115,7 @@ public class VHostsFile extends HostsFile
         String[] defSplit = line.split(":");
 
         if (defSplit.length == 2) {
-            host.setPort(defSplit[1].trim().replaceAll(">", ""));
+            host.setPort(cleanString(defSplit[1]));
         }
 
         while (reader.hasNextLine()) {
@@ -129,7 +129,7 @@ public class VHostsFile extends HostsFile
             } else {
                 defSplit = line.split(" ");
                 if (defSplit.length == 2) {
-                    setVirtualHostValue(host, defSplit[0], defSplit[1]);
+                    setVirtualHostValue(host, cleanString(defSplit[0]), cleanString(defSplit[1]));
                 }
             }
         }

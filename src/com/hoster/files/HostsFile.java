@@ -21,13 +21,15 @@ public class HostsFile extends ConfigFile
         try {
             if (file.exists()) {
                 Scanner reader = new Scanner(file);
+                String[] defSplit;
+
                 while (reader.hasNextLine()) {
-                    String[] line = reader.nextLine().split(" ");
-                    if (line.length == 2) {
+                    defSplit = reader.nextLine().split(" ");
+                    if (defSplit.length == 2) {
                         h = new Host();
-                        h.setActive(isHostActive(line[0].trim()));
-                        h.setIp(line[0].trim().replaceAll("#", ""));
-                        h.setServerName(line[1].trim());
+                        h.setActive(isHostActive(defSplit[0].trim()));
+                        h.setIp(cleanString(defSplit[0]));
+                        h.setServerName(cleanString(defSplit[1]));
 
                         hostsList.add(h);
                     }

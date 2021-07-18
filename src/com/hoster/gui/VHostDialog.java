@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 public class VHostDialog extends JDialog
 {
@@ -19,10 +20,13 @@ public class VHostDialog extends JDialog
     private JTextField serverAdmin;
     private JTextField serverName;
     private JTextField documentRoot;
+    private JButton findDocumentRootPath;
     private JTextField serverAlias;
     private JTextField port;
     private JTextField errorLog;
+    private JButton findErrorLogPath;
     private JTextField customLog;
+    private JButton findCustomLogPath;
     private JButton accept;
     private JButton cancel;
     private JTextField require;
@@ -38,6 +42,9 @@ public class VHostDialog extends JDialog
         getRootPane().setDefaultButton(accept);
         setVHostConfig();
 
+        findDocumentRootPath.addActionListener(e -> onFind(documentRoot, JFileChooser.DIRECTORIES_ONLY));
+        findErrorLogPath.addActionListener(e -> onFind(errorLog, JFileChooser.FILES_ONLY));
+        findCustomLogPath.addActionListener(e -> onFind(customLog, JFileChooser.FILES_ONLY));
         accept.addActionListener(e -> onAccept());
         cancel.addActionListener(e -> onCancel());
 
@@ -82,6 +89,19 @@ public class VHostDialog extends JDialog
         customLog.setText(host.getCustomLog());
         require.setText(host.getDirectory().getRequire());
         allowOverride.setText(host.getDirectory().getAllowOverride());
+    }
+
+    private void onFind(JTextField field, int mode)
+    {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileSelectionMode(mode);
+        fileChooser.setCurrentDirectory(new File(field.getText()));
+        int selection = fileChooser.showOpenDialog(field);
+
+        if (selection == JFileChooser.APPROVE_OPTION) {
+            field.setText(fileChooser.getSelectedFile().getAbsolutePath());
+        }
     }
 
     protected void onAccept()
