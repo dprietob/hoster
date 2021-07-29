@@ -3,6 +3,7 @@ package com.hoster.gui;
 import com.hoster.data.Properties;
 import com.hoster.gui.listeners.PropertiesListener;
 import org.ini4j.Ini;
+import org.ini4j.Profile;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class PhpDialog extends JDialog
 {
     private Properties properties;
+    private Ini ini;
     private PropertiesListener propertiesListener;
 
     private JFrame parent;
@@ -47,7 +49,6 @@ public class PhpDialog extends JDialog
 
         // Call onCancel() on ESCAPE
         phpPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
     }
 
     public void addConfigListener(PropertiesListener listener)
@@ -70,10 +71,10 @@ public class PhpDialog extends JDialog
     {
         // TODO
         try {
-            Ini ini = new Ini(new File(properties.getString("php_file")));
-            System.out.println(ini.get("PHP", "engine"));
-
-            System.out.println(ini.getAll("PHP"));
+            ini = new Ini(new File(properties.getString("php_file")));
+            getSectionsList();
+//            System.out.println(ini.get("PHP", "engine"));
+//            System.out.println(ini.getAll("PHP"));
 
 //            ini.put("PHP", "engine", "off");
 //            ini.store();
@@ -81,6 +82,19 @@ public class PhpDialog extends JDialog
             e.printStackTrace();
         }
 
+    }
+
+    protected String[] getSectionsList()
+    {
+        System.out.println("Number of sections: " + ini.size() + "\n");
+        for (String sectionName : ini.keySet()) {
+            System.out.println("[" + sectionName + "]");
+            Profile.Section section = ini.get(sectionName);
+            for (String optionKey : section.keySet()) {
+                System.out.println("\t" + optionKey + "=" + section.get(optionKey));
+            }
+        }
+        return null;
     }
 
     protected void onAccept()

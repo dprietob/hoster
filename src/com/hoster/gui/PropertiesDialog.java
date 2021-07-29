@@ -108,7 +108,7 @@ public class PropertiesDialog extends JDialog
     {
         JOptionPane.showMessageDialog(
             this,
-            "The theme will be updated when the application is restarted.",
+            "The theme will be updated when the application restarts.",
             "Theme changed",
             JOptionPane.INFORMATION_MESSAGE
         );
